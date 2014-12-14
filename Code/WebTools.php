@@ -54,20 +54,22 @@ class WebTools
 
 	public static function getPagePath()
 	{
-		$pageUrl = self::getPageUrl(false);
+		$pageUrl = self::getPageUrl(true);
 		return substr($pageUrl, 0, strripos($pageUrl, "/")+1);
 	}
 
     public static function getPageDomain()
     {
-        $url = self::getPageUrl();
-        $l = strlen($url);
-        $sl = strrpos($url, "/");
-        $sl = $sl === false ? l : $sl;
-        $qu = strrpos($url, "?");
-        $qu = $qu === false ? l : $qu;
-        $index = $sl<$qu?$sl:$qu;
-        return substr($url, 0, $index);
+		$pageURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://";
+		if ($_SERVER["SERVER_PORT"] != "80")
+		{
+			$pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"];
+		} 
+		else 
+		{
+			$pageURL .= $_SERVER["SERVER_NAME"];
+		}
+		return $pageURL;
     }
 
     public static function simpleXML2Array($xml){
@@ -82,6 +84,27 @@ class WebTools
 
         return $array;
     }
+	
+	public static function urlEncode($message){
+		$message = str_replace("?", "_-q-_", $message);
+		$message = str_replace("&", "_-a-_", $message);
+		$message = str_replace("=", "_-e-_", $message);
+		$message = str_replace("/", "_-s-_", $message);
+		$message = str_replace(":", "_-c-_", $message);
+		$message = str_replace(".", "_-d-_", $message);
+		return $message;
+	}
+	
+	public static function urlDecode($message){
+		$message = str_replace("_-q-_", "?", $message);
+		$message = str_replace("_-a-_", "&", $message);
+		$message = str_replace("_-e-_", "=", $message);
+		$message = str_replace("_-s-_", "/", $message);
+		$message = str_replace("_-c-_", ":", $message);
+		$message = str_replace("_-d-_", ".", $message);
+		return $message;
+	}
+	
 }
 
 
