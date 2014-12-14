@@ -1,4 +1,0 @@
-Groceries
-=========
-
-Delis Eshop
