@@ -1,0 +1,54 @@
+.header {
+  background-color: #88a75c;
+  min-height: 100px;
+  max-height: 200px;
+}
+
+.content {
+	
+	margin: 20px 0px:
+
+}
+
+
+.footer {
+  background-color: #88a75c;
+  min-height: 100px;
+  max-height: 200px;
+}
+
+.centralContent {
+  width: 55%;
+  margin: 0 auto;
+
+}
+
+
+
+.loginHeaderArea {
+  width:100%;
+  //float: right;
+  display: block;
+  //margin: right;
+}
+
+
+.header .categoriesMenu{
+	background-color: #f0f5e1;
+	text-align: center;
+	overflow: hidden;
+	height: 40px;
+}
+
+
+.header .categoriesMenu li{
+	display: block;
+	float: left;
+	width: 13%;
+}
+
+.header .categoriesMenu a{
+	color: #8e9c79;
+	text-align: center;
+	decoration: none; 
+}

@@ -1,3 +1,7 @@
+<div class="header">
+
+<div class="centralContent">
+
 <h1>Header</h1>
 <?php
 	$showLoginWidget = true;
@@ -25,10 +29,21 @@
 	});
 	$list = array("items" => $groups, "itemTemplate" => dirname(__FILE__)."/GroupListItem.php");
 	
-	echo renderTemplate(dirname(__FILE__)."/List.php", $list);
+	
+	//echo renderTemplate(dirname(__FILE__)."/List.php", $list);
 	
 	
 ?>
 <?php if($showLoginWidget){ ?>
-	<div><?= $loginWidget ?></div>
+    <div>
+		<div class="loginHeaderArea"><?= $loginWidget ?></div>
+	</div>
 <?php } ?>
+
+	<div class="categoriesMenu">	
+		<?php echo renderTemplate(dirname(__FILE__)."/List.php", $list); ?>
+	</div>
+
+</div>
+
+</div>
