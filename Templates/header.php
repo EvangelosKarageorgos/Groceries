@@ -2,7 +2,11 @@
 
 <div class="centralContent">
 
-<h1>Header</h1>
+			<div>
+				<div class="logoArea">
+					<img src="images/general/logo.png">
+				</div>
+
 <?php
 	$showLoginWidget = true;
 	if(strcmp(strtolower(Application::getRequest()->getDocumentName()), "login.php")==0)
@@ -18,6 +22,7 @@
 			$m["MyAccountUrl"] = WebTools::getPagePath()."account.php";
 		}
 		$loginWidget = renderTemplate(dirname(__FILE__)."/loginWidget.php", $m);
+		$cartWidget = renderTemplate(dirname(__FILE__)."/cartWidget.php", $m);
 	}
 	
 	
@@ -34,16 +39,30 @@
 	
 	
 ?>
+
 <?php if($showLoginWidget){ ?>
-    <div>
-		<div class="loginHeaderArea"><?= $loginWidget ?></div>
-	</div>
+			<div class="loginHeaderArea">
+				<?= $cartWidget ?>
+				<?= $loginWidget ?>
+			</div>		
+			<div class="clrfloat"> </div>
 <?php } ?>
+
+	</div>
+
+
+
+
+
 
 	<div class="categoriesMenu">	
 		<?php echo renderTemplate(dirname(__FILE__)."/List.php", $list); ?>
 	</div>
+	
 
+	
 </div>
 
 </div>
+
+

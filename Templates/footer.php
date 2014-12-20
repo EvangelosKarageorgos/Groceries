@@ -1,4 +1,4 @@
-<div class="header">
+<div class="footer">
 
 <div class="centralContent">
 

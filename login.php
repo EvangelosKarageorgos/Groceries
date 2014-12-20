@@ -19,7 +19,7 @@ require_once dirname(__FILE__)."/Code/init.php";
 	}
 ?>
 <form method="POST">
-	<input type="hidden" name="action" value="login" />
+	<input class="btn" type="hidden" name="action" value="login" />
 	<div>Username :</div><input name="uname" type="text" width="200" />
 	<div>Password :</div><input name="pass" type="password" width="200" />
 	<?php if($showError){ ?>
