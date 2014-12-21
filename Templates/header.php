@@ -1,5 +1,6 @@
 <?php includeHeadResource(new StyleResource(Application::getRequest()->getBasePath()."/styles/style.css")); ?>
 <?php includeHeadResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/jquery-1.11.1.min.js")); ?>
+<?php includeHeadResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/Core.js")); ?>
 <?php includeHeadResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/cart.js")); ?>
 <?php includeFootResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/search.js")); ?>
 <script>BasePath = "<?= Application::getRequest()->getBasePath() ?>";</script>
