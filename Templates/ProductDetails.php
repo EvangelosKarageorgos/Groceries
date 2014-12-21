@@ -9,4 +9,14 @@
 	<div class="description"><?= $model['description'] ?></div>
 	<div class="price"><?= $model['price'] ?></div>
 	<div class="quantity"><?= $model['availableQuantity'] ?></div>
+	
+	<input class="groceriesBtn add-to-cart-button" type="button" value="Add To Cart" />
+
 </div>
+<script>
+		$(".details").each(function(jj, wrapper){
+			$(wrapper).find('.add-to-cart-button').click(function(){
+				addToCart(wrapper, 1);
+			});
+		});
+</script>

@@ -10,6 +10,7 @@ class Product
 	public $price = 0.0;
 	public $availableQuantity = 0;
 	public $imageUrl = "";
+	public $qty = 1;
 
 	public function loadFromDb($code){
 		$dt = Application::getDB()->ExecuteDataTable("select * from products p inner join product_groups pg on pg.group_code = p.prod_group where p.prod_code='?'", $code);
@@ -31,10 +32,14 @@ class Product
 				$this->imageUrl = Application::getRequest()->getBasePath().$this->imageUrl;
 			}
 		}
+		if(isset($row['qty'])){
+			$this->qty = intval($row['qty']);
+		}
 	}
 	
 	public function toModel(){
 		return array(
+			"code" => $this->code,
 			"name" => $this->name,
 			"description" => $this->description,
 			"group" => $this->group,
@@ -42,7 +47,8 @@ class Product
 			"availableQuantity" => $this->availableQuantity,
 			"imageUrl" => $this->imageUrl,
 			"price" => $this->price,
-			"url" => Application::getRequest()->getBasePath()."/product.php?code=".$this->code
+			"url" => Application::getRequest()->getBasePath()."/product.php?code=".$this->code,
+			"qty" => $this->qty
 		);
 	}
 }

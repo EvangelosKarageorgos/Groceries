@@ -1,8 +1,7 @@
 <div class="groupItem">
 
 	<?php
-
-		$isChecked = (false) ? "checked" : ""; 
+		$isChecked = (in_array($model['code'], $model['searchGroups'])) ? "checked" : ""; 
 		
 		$generatedInputField = "<input type=\"checkbox\" name=\"group\" value=\"".$model['code']."\" ".$isChecked.">"
 									.$model['name']
