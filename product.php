@@ -9,6 +9,5 @@
 	<h3>Product not found</h3>
 	<div>The code specified does not match any product.</div>
 <?php } else { ?>
-	<h3>ProductPage</h3>
 	<?php echo renderTemplate(dirname(__FILE__)."/Templates/ProductDetails.php", $product->toModel());	?>
 <?php } ?>

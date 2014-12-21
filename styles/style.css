@@ -337,11 +337,62 @@
 
 
 .box-content .sorting-selector .sort-field select, 
-.box-content .sorting-selector .order-field select
+.box-content .sorting-selector .order-field select 
 {
 	width: 100%;
 }
 
 
+.details .productInfo{
+	float: left;
+	display: inline-block;
+	width: 55%;
+}
 
+
+.details .productInfo  image{
+	
+
+}
+
+
+.details .productInfo .description{
+		margin-top: 20px;
+}
+
+.details .productInfo .description p {
+	text-align: justify;
+}
+
+.details .productInfo  img{
+	width: 90%;
+	display: block;
+	margin-bottom: 20px;
+}
+
+
+.details .productOrderArea{
+	float: right;
+	display: inline-block;
+	width: 40%;
+}
+
+
+.details .productOrderArea .price{
+	font-size: 30px;
+	font-weight: bold;
+	color: darkred;
+}
+
+.details .productOrderArea .addToCartArea{
+    background-color: #f0f5e1;
+    display: block;
+    margin-top: 30px;
+    padding: 15px 70px;
+}
+
+.details .productOrderArea .addToCartArea .orderedQuantity{
+	width: 30px;
+	text-align: center;
+}
 
