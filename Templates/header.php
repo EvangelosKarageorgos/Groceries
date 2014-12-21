@@ -1,3 +1,6 @@
+<?php includeHeadResource(new StyleResource("/groceries/base.css")); ?>
+<?php includeHeadResource(new StyleResource("/groceries/style/style.css")); ?>
+<?php includeFootResource(new ScriptResource("/groceries/base.js")); ?>
 <div class="header">
 
 <div class="centralContent">
