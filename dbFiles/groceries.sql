@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 14, 2014 at 10:41 PM
+-- Generation Time: Dec 21, 2014 at 09:43 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -24,7 +24,7 @@ DELIMITER $$
 --
 -- Procedures
 --
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_cart`(IN `icartid` int, IN `icust_no` int)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `get_cart`(IN `icartid` INT, IN `icust_no` INT)
     DETERMINISTIC
 begin
 	SET @cartid = icartid;
@@ -44,8 +44,8 @@ begin
 			update carts set cust_no = @cust_no where cartid=@cartid;
 		end if;
 	end if;
-	
-	select * from carts where cartid = @cartid;
+    
+	 select c.cartid as cart_id, c.cust_no, cd.* from carts c left join cart_details cd on cd.cartid=c.cartid where c.cartid = @cartid;
 end$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `user_login`(IN `ilogin` varchar(50), IN `ipassword` varchar(50))
@@ -63,6 +63,57 @@ begin
     
 end$$
 
+--
+-- Functions
+--
+CREATE DEFINER=`root`@`localhost` FUNCTION `add_to_cart`(`icartid` INT, `iprod_code` VARCHAR(20), `iqty` INT) RETURNS int(10)
+    MODIFIES SQL DATA
+begin
+	
+    if not exists (select * from products where prod_code=iprod_code) then
+    begin
+    	return 0;
+    end;
+    end if;
+    
+    SET @stock = (select qty_on_hand from products where prod_code=iprod_code);
+	SET @quantityAlready = ifnull((select qty from cart_details where cartid=icartid and prod_code=iprod_code), 0);
+
+    IF @quantityAlready = 0 and iqty<0 THEN
+    BEGIN
+    	return 0;
+    END;
+    ELSE
+    BEGIN
+        IF @stock < iqty + @quantityAlready THEN
+            SET @qty = @stock - @quantityAlready;
+        ELSE
+            SET @qty = iqty;
+        END IF;
+        
+        IF @qty + @quantityAlready >0 THEN
+            BEGIN
+                IF NOT EXISTS (select * from cart_details where cartid=icartid and prod_code=iprod_code) THEN
+                    BEGIN
+                        insert into cart_details (cartid, prod_code, qty) values(icartid, iprod_code, @qty);
+                    END;
+                ELSE
+                    BEGIN
+                        update cart_details set qty=(qty+@qty) where cartid=icartid and prod_code=iprod_code;
+                    END;
+                END IF;
+            END;
+        ELSE
+            BEGIN
+				SET @qty = -@quantityAlready;
+                delete from cart_details where cartid=icartid and prod_code=iprod_code;
+            END;
+        END IF;
+        return @qty;
+    END;
+    END iF;
+end$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -78,14 +129,30 @@ CREATE TABLE IF NOT EXISTS `carts` (
   `IsActive` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`cartid`),
   KEY `cust_no` (`cust_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=18 ;
 
 --
 -- Dumping data for table `carts`
 --
 
 INSERT INTO `carts` (`cartid`, `cust_no`, `CreatedOn`, `IsActive`) VALUES
-(1, 1, '2014-12-14 21:34:50', 1);
+(1, NULL, '2014-12-14 21:34:50', 1),
+(2, NULL, '2014-12-21 13:13:48', 1),
+(3, NULL, '2014-12-21 13:14:05', 1),
+(4, NULL, '2014-12-21 13:14:09', 1),
+(5, NULL, '2014-12-21 13:14:09', 1),
+(6, NULL, '2014-12-21 13:14:10', 1),
+(7, NULL, '2014-12-21 13:14:12', 1),
+(8, NULL, '2014-12-21 13:14:12', 1),
+(9, NULL, '2014-12-21 13:14:40', 1),
+(10, NULL, '2014-12-21 13:14:45', 1),
+(11, NULL, '2014-12-21 13:14:45', 1),
+(12, NULL, '2014-12-21 13:17:08', 1),
+(13, NULL, '2014-12-21 13:17:32', 1),
+(14, NULL, '2014-12-21 13:17:39', 1),
+(15, NULL, '2014-12-21 13:17:40', 1),
+(16, NULL, '2014-12-21 13:18:14', 1),
+(17, 1, '2014-12-21 13:18:16', 1);
 
 -- --------------------------------------------------------
 
@@ -95,10 +162,20 @@ INSERT INTO `carts` (`cartid`, `cust_no`, `CreatedOn`, `IsActive`) VALUES
 
 CREATE TABLE IF NOT EXISTS `cart_details` (
   `cartid` int(11) NOT NULL,
-  `prod_code` varchar(20) COLLATE utf8_bin NOT NULL,
+  `prod_code` varchar(20) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `qty` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`cartid`,`prod_code`)
+  PRIMARY KEY (`cartid`,`prod_code`),
+  KEY `prod_code` (`prod_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Dumping data for table `cart_details`
+--
+
+INSERT INTO `cart_details` (`cartid`, `prod_code`, `qty`) VALUES
+(17, 'V_004_CLF', 5),
+(17, 'V_007_WCB', 2),
+(17, 'V_008_BRC', 5);
 
 -- --------------------------------------------------------
 
@@ -163,7 +240,7 @@ INSERT INTO `products` (`prod_code`, `name`, `description`, `prod_group`, `list_
 ('V_004_CLF', 'Cauliflower', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 5, 10, 5, '/images/products/cauliflower.jpg'),
 ('V_005_LTC', 'Lettuce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '2.00', 10, 10, 10, '/images/products/lettuce.jpg'),
 ('V_006_RCB', 'Red Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '5.00', 10, 7, 3, '/images/products/cabbage_red.jpg'),
-('V_007_WCB', 'Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum.', 'V', '2.00', 20, 5, 10, '/images/products/cabbage_white.jpg'),
+('V_007_WCB', 'Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum.', 'V', '2.00', 2, 5, 10, '/images/products/cabbage_white.jpg'),
 ('V_008_BRC', 'Broccoli', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nTRwewrsfdfs sdf werrtt dfg dfg wewe weerdfg', 'V', '7.50', 5, 10, 5, '/images/products/broccoli.jpg');
 
 -- --------------------------------------------------------
@@ -243,6 +320,13 @@ INSERT INTO `users` (`cust_no`, `login`, `password`, `cust_name`, `email`, `stre
 --
 ALTER TABLE `carts`
   ADD CONSTRAINT `carts_ibfk_1` FOREIGN KEY (`cust_no`) REFERENCES `users` (`cust_no`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `cart_details`
+--
+ALTER TABLE `cart_details`
+  ADD CONSTRAINT `cart_details_ibfk_2` FOREIGN KEY (`prod_code`) REFERENCES `products` (`prod_code`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cart_details_ibfk_1` FOREIGN KEY (`cartid`) REFERENCES `carts` (`cartid`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `orders`
