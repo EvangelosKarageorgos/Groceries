@@ -1,3 +1,13 @@
+<?php
+	$groups = array();
+	Application::getDB()->WhileReader("select * from product_groups order by group_name", function(&$row) use(&$groups){
+		$g = new Group();
+		$g->loadFromRow($row);
+		array_push($groups, $g->toModel());
+	});
+	$list = array("items" => $groups, "itemTemplate" => dirname(__FILE__)."/../Templates/SearchGroupListItem.php");
+?>
+
 <div class="searchbox">
 			
 	<div class="box-heading">
@@ -5,67 +15,53 @@
 	</div>
 				
 	<div class="box-content"> 
-		<span>Search Items</span> 
+		<form method="GET">
+
+			<div class="search-text-selector form-field">
+				<span class="title">Search for</span>
+				<div class="field">
+					<?php echo renderTemplate(dirname(__FILE__)."/searchKeys.php", array()); ?> 					
+				</div>
+			</div>
+		
+		
+			<div class="group-selector form-field">
+				<span class="title">Groups</span>
+								
+				<div class="list">
+					<?php echo renderTemplate(dirname(__FILE__)."/../Templates/List.php", $list); ?> 					
+				</div>
+				
+				<div class="clrfloat"> </div>
+								
+			</div>
+			
+
+			
+			<div class="price-range-selector form-field">
+				<span class="title">Price range</span>
+				<div class="price-range-area">
+					<?php echo renderTemplate(dirname(__FILE__)."/searchPriceRange.php", array()); ?> 					
+					<div class="clrfloat"> </div>
+				</div>
+				
+			</div>
+			
+			<div class="sorting-selector form-field">
+				<span class="title">Sort by</span>
+				<div>
+					<?php echo renderTemplate(dirname(__FILE__)."/searchSortBy.php", array()); ?> 
+					<div class="clrfloat"> </div>
+				</div>
+			</div>
+
+			<div class="clrfloat"> </div>
+			
+			<input class="groceriesBtn" type="submit" value="Search"/>
+		</form> 
 	</div>
-	<form method="GET">
-
-		<div class="search-text-selector form-field">
-			<span class="title">Text</span>
-			<div class="field">
-				<div class="label">Keyqords :</div>
-				<input type="text" name="searchText" placeholder="keywords" />
-			</div>
-
-		</div>
 	
 	
-		<div class="group-selector form-field">
-			<span class="title">Groups</span>
-			<div class="list">
-				<ul class="groups-values">
-					<li><input type="checkbox" name="group" value="M" checked>Vegetables</input></li>
-					<li><input type="checkbox" name="group" value="S" checked>Seafood</input></li>
-				</ul>
-			</div>
-		</div>
-		
-
-		
-		<div class="price-range-selector form-field">
-			<span class="title">Price range</span>
-			<div class="field">
-				<div class="label">From :</div>
-				<input type="text" name="priceFrom" placeholder="from" />
-			</div>
-			<div class="field">
-				<div class="label">To :</div>
-				<input type="text" name="priceTo" placeholder="to" />
-			</div>
-		</div>
-		
-		<div class="sorting-selector form-field">
-			<span class="title">Sorting</span>
-			<div class="field">
-				<div class="label">Sort field :</div>
-				<select name="sort-field">
-					<option value="price">Price</option>
-					<option value="productName">Product name</option>
-					<option value="ggroupName">Group name</option>
-				</select>
-			</div>
-			<div class="field">
-				<div class="label">Order :</div>
-				<select name="sort-order">
-					<option value="desc">Descending</option>
-					<option value="asc">Ascending</option>
-				</select>
-			</div>
-		</div>
-
-		
-		
-		<input type="submit" value="Search"/>
-	</form>
 	
 	
 	

@@ -78,7 +78,41 @@
   background-image: -o-linear-gradient(top, #fab43c, #d9bd34);
   background-image: linear-gradient(to bottom, #fab43c, #d9bd34);
   text-decoration: none;
+  cursor: pointer;
 }
+
+
+
+
+
+.groceriesBtn {
+  background: #ed973b;
+  background-image: -webkit-linear-gradient(top, #88a75c, #88a75c);
+  background-image: -moz-linear-gradient(top, #88a75c, #88a75c);
+  background-image: -ms-linear-gradient(top, #88a75c, #88a75c);
+  background-image: -o-linear-gradient(top, #88a75c, #88a75c);
+  background-image: linear-gradient(to bottom, #88a75c, #88a75c);
+  -webkit-border-radius: 20;
+  -moz-border-radius: 20;
+  border-radius: 20px;
+  font-family: Arial;
+  color: white;
+  font-size: 13px;
+  padding: 3px 9px 3px 9px;
+  text-decoration: none;
+}
+
+.groceriesBtn:hover {
+  background: #fab43c;
+  background-image: -webkit-linear-gradient(top, #fab43c, #d9bd34);
+  background-image: -moz-linear-gradient(top, #fab43c, #d9bd34);
+  background-image: -ms-linear-gradient(top, #fab43c, #d9bd34);
+  background-image: -o-linear-gradient(top, #fab43c, #d9bd34);
+  background-image: linear-gradient(to bottom, #fab43c, #d9bd34);
+  text-decoration: none;
+  cursor: pointer;
+}
+
 
 
 
@@ -232,3 +266,82 @@
 	text-align: justify;
 	max-height: 30px;
 }
+
+
+
+
+
+.box-content .form-field {
+	display: block;
+	float: left;
+	width: 100%;
+	margin-bottom: 25px;	
+}
+
+
+.box-content .group-selector ul{
+	float: left;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.box-content .group-selector li{
+	display: inline;
+}
+
+.box-content .group-selector li{
+	display: inline;
+}
+
+.box-content .group-selector .groupItem{
+	display: block;
+	float: left;
+	min-width: 47%;
+}
+
+
+
+
+.box-content .price-range-selector .price-range-area div {
+	display: inline;
+	float: left;
+	margin-right: 3px;
+}
+
+.box-content .price-range-selector .field {
+	width: 45%;
+}
+
+.box-content .price-range-selector .field input{
+	width: 100%;
+}
+
+
+
+.box-content .sorting-selector .sort-field {
+	display: inline;
+	float: left;
+	width: 57%;
+	margin-right: 5px;
+	min-width: 70px;
+}
+
+.box-content .sorting-selector .order-field {
+    display: inline;
+    float: left;
+    min-width: 57px;
+    width: 35%;
+}
+
+
+.box-content .sorting-selector .sort-field select, 
+.box-content .sorting-selector .order-field select
+{
+	width: 100%;
+}
+
+
+
+

@@ -19,6 +19,7 @@ class Group
 	public function toModel(){
 		return array(
 			"name" => $this->name,
+			"code" => $this->code,
 			"url" => Application::getRequest()->getBasePath()."/productList.php?group=".$this->code
 		);
 	}
