@@ -1,6 +1,5 @@
-<?php includeHeadResource(new StyleResource("/groceries/base.css")); ?>
-<?php includeHeadResource(new StyleResource("/groceries/style/style.css")); ?>
-<?php includeFootResource(new ScriptResource("/groceries/base.js")); ?>
+<?php includeHeadResource(new StyleResource(Application::getRequest()->getBasePath()."/styles/style.css")); ?>
+<?php includeHeadResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/jquery-1.11.1.min.js")); ?>
 <div class="header">
 
 <div class="centralContent">
