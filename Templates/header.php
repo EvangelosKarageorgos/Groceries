@@ -17,13 +17,15 @@
 
 <?php
 	$showLoginWidget = true;
-	if(strcmp(strtolower(Application::getRequest()->getDocumentName()), "login.php")==0)
+	if(strcmp(strtolower(Application::getRequest()->getDocumentName()), "login.php")==0 || 
+			strcmp(strtolower(Application::getRequest()->getDocumentName()), "register.php")==0)
 		$showLoginWidget = false;
 	else{
 		$isAuthenticated = Application::getAuth()->isAuthenticated();
 		$m = array();
 		$m["IsAuthenticated"] = $isAuthenticated;
 		$m["LoginUrl"] = WebTools::getPagePath()."login.php?dst=".WebTools::urlEncode(WebTools::getPageUrl());
+		$m["RegisterUrl"] = WebTools::getPagePath()."register.php?dst=".WebTools::urlEncode(WebTools::getPageUrl());
 		if($isAuthenticated){
 			$name = Application::getDB()->ExecuteScalar("select cust_name from Users where cust_no=?", Application::getAuth()->getCustomerNum());
 			$m["CustomerName"] = $name;

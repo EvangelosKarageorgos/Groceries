@@ -26,5 +26,5 @@ require_once dirname(__FILE__)."/Code/init.php";
 	<?php if($showError){ ?>
 		<div><?= $errorMsg ?><div>
 	<?php } ?>
-	<input class="groceriesBtn" type="submit" value="Login"/>
+	<input class="groceriesBtn" type="submit" value="Register"/>
 </form>

@@ -53,6 +53,14 @@
     padding: 5px 15px;
 }
 
+.loginHeaderArea .accountArea, 
+	.loginHeaderArea .logoutArea 
+{
+    padding: 5px 5px;
+}
+
+
+
 .loginHeaderArea .btn {
   background: #ed973b;
   background-image: -webkit-linear-gradient(top, #ed973b, #e88a25);
