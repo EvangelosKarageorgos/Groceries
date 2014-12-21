@@ -128,7 +128,7 @@
 .searchbox{
 	display: block;
 	float: left;
-	width: 20%;
+	width: 23%;
 }
 
 
@@ -175,4 +175,60 @@
 .cartBtn img{
 	height: 32px;
 	width: 32px;
+}
+
+
+
+
+
+
+.content .itemArea ul {
+    float: left;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+	
+}
+
+
+.content .itemArea li{
+	display: inline;
+	
+}
+
+.content .itemArea  .item{
+	float: left;
+	background-color: #f0f5e1;
+	width: 28%;
+	padding: 5px;
+	margin: 5px;
+	min-height: 250px;
+	max-height: 250px;
+	min-width: 160px;
+}
+
+
+.content .itemArea  .item img{
+    height: 100px;
+	width: 100px;
+	display: block;
+    margin: 0 auto;
+    padding: 5px;
+	border: 2.25px solid lightgray;
+}
+
+
+.content .itemArea  .item a{
+	text-decoration: none;
+	text-align: center;
+	color: black;
+}
+
+
+
+.content .itemArea  .item .description{
+	display: none;
+	text-align: justify;
+	max-height: 30px;
 }
