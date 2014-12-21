@@ -11,7 +11,7 @@ class CartItem
 		$p = new Product();
 		$p->loadFromDb($this->code);
 		$p->qty = $this->qty;
-		return $p->to<odel();
+		return $p->toModel();
 	}
 }
 class Cart

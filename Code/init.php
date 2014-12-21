@@ -5,6 +5,7 @@ require_once dirname(__FILE__)."/WebTools.php";
 
 require_once dirname(__FILE__)."/Product.php";
 require_once dirname(__FILE__)."/Group.php";
+require_once dirname(__FILE__)."/Order.php";
 
 Application::getRequest()->setBasePath("/groceries");
 

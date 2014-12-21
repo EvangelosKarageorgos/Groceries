@@ -17,14 +17,19 @@
 			)
 		{
 			var_dump("Submitting order...");
+			var_dump($cartid);
+			$order_no = Application::getDB()->ExecuteScalar("select convert_cart_to_order(?)", $cartid);
+			if($order_no>=0){
+				WebTools::redirect(Application::getRequest()->getBasePath()."/checkout/invoice.php?orderno=".$order_no);
+			}
 		}
 	}
 	
 	$cartModel = $cart->toModel();
-	$cartModel['itemTemplate'] = dirname(__FILE__)."/../Templates/OrderItem.php";
+	$cartModel['itemTemplate'] = dirname(__FILE__)."/../Templates/OrderCartItem.php";
 	
 	$cardno = "grgerger";
-	$invoice = renderTemplate(dirname(__FILE__)."/../Templates/Invoice.php", $cartModel);
+	$invoice = renderTemplate(dirname(__FILE__)."/../Templates/OrderCart.php", $cartModel);
 
 ?>
 <div class="checkout-form">

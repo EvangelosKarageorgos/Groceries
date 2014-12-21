@@ -5,9 +5,12 @@
 		<div class="group"><?= $model['groupName'] ?></div>
 	</td>
 	<td>
+		<div class="price"><?= $model['price'] ?></div>$
+	</td>
+	<td>
 		<div class="qty"><?= $model['qty'] ?></div>
 	</td>
 	<td>
-		<div class="total-price"><?= $model['totalPrice'] ?></div>$
+		<div class="total-price"><?= $model['qty']*$model['price'] ?></div>$
 	</td>
 </tr>

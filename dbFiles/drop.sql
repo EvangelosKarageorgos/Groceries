@@ -8,6 +8,7 @@ drop table 	product_groups;
 drop table 	users;
 
 drop 	FUNCTION 	add_to_cart 	;
+drop 	FUNCTION 	convert_cart_to_order 	;
 drop 	PROCEDURE 	get_cart 	;
 drop 	PROCEDURE 	user_login 	;
 
