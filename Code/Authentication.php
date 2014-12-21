@@ -25,6 +25,56 @@ class Authentication
 		$this->_isAuthEvaluated = true;
 	}
 	
+	
+	public function register($userName, $passWord, $fullName, $eMail, $street, $town, $postcode){
+		session_name("Auth");
+		session_start();
+		
+		$result = 0;
+		
+		$isAuth = false;
+		$custNo = -1;
+		
+		if(!strlen($userName)>0 || !strlen($passWord)>0 || !strlen($fullName)>0 || !strlen($eMail.'')>0 
+			|| !strlen($street)>0 || !strlen($town)>0 || !strlen($postcode)>0 )
+		{
+			$result = 1;
+		}
+		
+		else {
+			
+			Application::getDB()->WhileReader("call user_register('?', '?', '?', '?', '?', '?', '?')", function(&$r) use(&$isAuth, &$custNo){
+				$userNotExists = intval($r["existingLogin"])==0;
+				if($userNotExists){
+					$result = 0;
+					$isAuth = true;
+					$custNo = intval($r["custNum"]);
+				}
+				else {
+					$result = 2;
+				}
+			}, $userName, $passWord, $fullName, $eMail, $street, $town, $postcode);
+			
+			
+		
+		}
+		
+		
+				
+
+
+		
+		$_SESSION["cust_no"] = $custNo;
+		$_SESSION["IsAuthenticated"] = $isAuth;
+		session_write_close();
+		$this->_isAuthenticated = $isAuth;
+		$this->_custNo = $custNo;
+		$this->_isAuthEvaluated = true;
+		
+		return $result;
+	}
+	
+	
 	public function login($username, $password){
 		session_name("Auth");
 		session_start();

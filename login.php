@@ -24,7 +24,7 @@ require_once dirname(__FILE__)."/Code/init.php";
 	<div>Username :</div><input name="uname" type="text" width="200" />
 	<div>Password :</div><input name="pass" type="password" width="200" />
 	<?php if($showError){ ?>
-		<div><?= $errorMsg ?><div>
+		<div><?= $errorMsg ?></div>
 	<?php } ?>
 	<input class="groceriesBtn" type="submit" value="Login"/>
 </form>
