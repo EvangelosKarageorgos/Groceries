@@ -15,6 +15,10 @@ class Cart
 		$this->cartid = $cartid;
 		$this->cust_no = $cust_no;
 	}
+	
+	public function add(prod_code, qty){
+		
+	}
 }
 
 class CartManager

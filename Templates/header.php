@@ -4,7 +4,9 @@
 
 			<div>
 				<div class="logoArea">
-					<img src="images/general/logo.png">
+					<a href="<?= WebTools::getpageBase()."/home.php" ?>"/>
+						<img src="images/general/logo.png">
+					</a>
 				</div>
 
 <?php
