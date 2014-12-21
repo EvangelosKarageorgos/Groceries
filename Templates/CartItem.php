@@ -1,4 +1,4 @@
-<tr class="item" code="<?= $model['code'] ?>" qty="<?= $model['qty'] ?>">
+<tr class="item" code="<?= $model['code'] ?>" qty="<?= $model['qty'] ?>" price="<?= $model['price'] ?>">
 	<td>
 		<a href="<?= $model['url'] ?>">
 			<img src="<?= $model['imageUrl'] ?>" width="100" height="100" alt="<?= $model['name'] ?>" />
@@ -11,7 +11,7 @@
 		<div class="group"><?= $model['groupName'] ?></div>
 	</td>
 	<td>
-		<div class="price"><?= $model['price'] ?>$</div>
+		<div class="price"><?= $model['price'] ?></div>$
 	</td>
 	<td>
 		<div class="qty"><?= $model['qty'] ?></div>
@@ -19,6 +19,6 @@
 		<div class="rem-qty">-</div>
 	</td>
 	<td>
-		<div class="total-price"><?= $model['qty']*$model['price'] ?>$</div>
+		<div class="total-price"><?= $model['qty']*$model['price'] ?></div>$
 	</td>
 </tr>

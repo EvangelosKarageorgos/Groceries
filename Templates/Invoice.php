@@ -1,4 +1,4 @@
-<div class="cart">
+<div class="invoice">
 	<table>
 		<tr>
 			<th>
@@ -28,19 +28,4 @@
 			<span class="price"><?= $model["totalPrice"] ?></span>
 		</div>
 	</div>
-	<div class="checkout-btn-container">
-		<a href="<?= Application::getRequest()->getBasePath()."/checkout" ?>">
-			<input class="groceriesBtn checkout-button" type="button" value="Checkout" />
-		</a>
-	</div>
-	<script>
-		$(".cart .item").each(function(jj, wrapper){
-			$(wrapper).find('.add-qty').click(function(){
-				addToCart(wrapper, 1)
-			});
-			$(wrapper).find('.rem-qty').click(function(){
-				addToCart(wrapper, -1)
-			});
-		});
-	</script>
 </div>
