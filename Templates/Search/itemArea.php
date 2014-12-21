@@ -93,7 +93,6 @@
 	
 	
 	$query = "select * from products p inner join product_groups pg on pg.group_code = p.prod_group" . $whereClause . $orderClause;
-	var_dump($query);
 	$products = array();
 	Application::getDB()->WhileReader($query, function(&$row) use(&$products){
 		$p = new Product();
