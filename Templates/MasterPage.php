@@ -9,7 +9,12 @@
 </head>
 <body>
 	<?= $model['Header'] ?>
-	<?= $model['Content'] ?>
+	<div class="content">
+		<div class="centralContent">
+			<?= $model['Content'] ?>
+			<div class="clrfloat"> </div>
+		</div>
+	</div>
 	<?= $model['Footer'] ?>
 	<?= $model['FootResources'] ?>
 </body>

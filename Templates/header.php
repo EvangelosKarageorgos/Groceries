@@ -4,7 +4,7 @@
 
 			<div>
 				<div class="logoArea">
-					<a href="<?= WebTools::getpageBase()."/home.php" ?>"/>
+					<a href="<?= Application::getRequest()->getBasePath()."/home.php" ?>"/>
 						<img src="images/general/logo.png">
 					</a>
 				</div>
@@ -47,8 +47,8 @@
 				<?= $cartWidget ?>
 				<?= $loginWidget ?>
 			</div>		
-			<div class="clrfloat"> </div>
 <?php } ?>
+		<div class="clrfloat"> </div>
 
 	</div>
 

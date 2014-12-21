@@ -10,20 +10,8 @@ require_once dirname(__FILE__)."/Code/init.php";
 
 
 
-
-
-<div class="content">
-
-	<div class="centralContent">
-
-		<?php
-			$m = array();
-			echo renderTemplate(dirname(__FILE__)."/Search/searchArea.php", $m);
-			echo renderTemplate(dirname(__FILE__)."/Search/itemArea.php", $m);
-		?>
-		
-		<div class="clrfloat"> </div>
-
-	</div>
-
-</div>
+<?php
+	$m = array();
+	echo renderTemplate(dirname(__FILE__)."/Search/searchArea.php", $m);
+	echo renderTemplate(dirname(__FILE__)."/Search/itemArea.php", $m);
+?>
