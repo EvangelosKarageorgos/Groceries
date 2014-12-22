@@ -128,4 +128,17 @@ class Authentication
 		}
 	}
 	
+	public function getCustomerInfo(){
+		$result = array();
+		Application::getDB()->WhileReader("select * from users where cust_no=?", function(&$r) use (&$result){
+			$result['Name'] = $r['cust_name'];
+			$result['Email'] = $r['email'];
+			$result['Address'] = $r['street'];
+			$result['Town'] = $r['town'];
+			$result['Postcode'] = $r['post_code'];
+			$result['CreditBalance'] = $r['curr_bal'];
+		}, $this->getCustomerNum());
+		return $result;
+	}
+	
 }
