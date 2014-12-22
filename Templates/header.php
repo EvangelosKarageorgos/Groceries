@@ -30,6 +30,7 @@
 			$name = Application::getDB()->ExecuteScalar("select cust_name from Users where cust_no=?", Application::getAuth()->getCustomerNum());
 			$m["CustomerName"] = $name;
 			$m["MyAccountUrl"] = Application::getRequest()->getBasePath()."/account";
+			$m["MyAdminUrl"] = Application::getRequest()->getBasePath()."/admin";
 		}
 		$loginWidget = renderTemplate(dirname(__FILE__)."/loginWidget.php", $m);
 		$cartWidget = renderTemplate(dirname(__FILE__)."/cartWidget.php", $m);

@@ -13,6 +13,9 @@
 	<?php if($model["IsAuthenticated"]){ ?>
 		<div class="accountArea">
 			<span><?= $model["CustomerName"] ?></span>
+			<?php if($model["IsAuthenticated"]){ //$model["IsAdmin"] ?> 
+				<input class="btn" type="button" Value="MyAdmin" onClick="window.location='<?= $model["MyAdminUrl"] ?>'" />
+			<?php } ?>
 			<input class="btn" type="button" Value="MyAccount" onClick="window.location='<?= $model["MyAccountUrl"] ?>'" />
 		</div>
 		<div class="logoutArea">
