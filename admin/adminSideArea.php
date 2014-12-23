@@ -11,36 +11,26 @@
 					<div class="query-menu-category">
 						<span class="title">Most Popular</span>
 						<div title="Most Popular Products(week)" class="query-menu-item"> 
-							<a href="<?= Application::getRequest()->getBasePath()."/admin/topProducts.php" ?>">Products(week)</a> 
+							<a href="<?= Application::getRequest()->getBasePath()."/admin/topProducts.php" ?>">Products</a> 
 						</div>
 						<div title="Most Popular Suppliers(week)" class="query-menu-item"> 
-							<a href="#">Suppliers(week)</a> 
+							<a href="<?= Application::getRequest()->getBasePath()."/admin/topSuppliers.php" ?>">Suppliers</a> 
 						</div>
 						<div title="Most Popular Postal Codes(week)" class="query-menu-item"> 
-							<a>Post Codes(week)</a> 
-						</div>
-						
-						<div title="Most Popular Products Ever" class="query-menu-item"> 
-							<a>Products</a> 
-						</div>
-						<div title="Most Popular Suppliers Ever" class="query-menu-item"> 
-							<a>Suppliers</a> 
-						</div>
-						<div title="Most Popular Postal Codes Ever)" class="query-menu-item"> 
-							<a>Post Codes</a> 
-						</div>
+							<a href="<?= Application::getRequest()->getBasePath()."/admin/topPostCodes.php" ?>">Post Codes</a> 
+						</div>		
 					</div>
 
 					<div class="query-menu-category">
 						<span class="title">Various</span>
 						<div title="Never been ordered Products " class="query-menu-item"> 
-							<a> Not Ordered Products </a> 
-						</div>
-						<div title="Not been ordered products this month" class="query-menu-item"> 
-							<a> Not Ordered Products (Month)</a> 
+							<a href="<?= Application::getRequest()->getBasePath()."/admin/notOrderedProducts.php" ?>"> Not Ordered Products </a> 
 						</div>
 						<div title="Most Expensive Product per Group" class="query-menu-item"> 
-							<a>Expensive Products</a> 
+							<a href="<?= Application::getRequest()->getBasePath()."/admin/mostExpensiveProducts.php" ?>">Expensive Products</a> 
+						</div>
+						<div title="Best Sellers Products per Group" class="query-menu-item"> 
+							<a href="<?= Application::getRequest()->getBasePath()."/admin/bestSellersProducts.php" ?>">Best Sellers</a> 
 						</div>
 					</div>
 			</div>
@@ -48,18 +38,11 @@
 		
 			<div class="form-field">
 				<span class="title">User Awards</span>
-					<div class="query-menu-item"> <a> Best Clients </a> </div>	
-					<div class="query-menu-item"> <a> Best Clients (Month)</a> </div>	
-				
+					<div class="query-menu-item"> 
+						<a href="<?= Application::getRequest()->getBasePath()."/admin/bestClients.php" ?>"> Best Clients </a> 
+					</div>				
 				<div class="clrfloat"> </div>
 								
-			</div>
-			
-			
-			<div class="form-field">
-				<span class="title">TODO</span>
-				<div class=""> <a> if needed </a> </div>
-
 			</div>
 			
 			<div class="clrfloat"> </div>
