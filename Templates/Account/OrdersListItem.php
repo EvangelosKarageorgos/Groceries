@@ -1,4 +1,4 @@
-<div class="order">
+<div class="orderList">
 	<div class="summary">
 		<div class="date">
 			<span class="label">Date :&nbsp;</span>

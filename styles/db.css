@@ -1,0 +1,14 @@
+.query-result-table{border-collapse: collapse;text-align:center; border:1px solid #606060;}
+.query-result-table td{border-right:1px solid #A0A0A0;}
+
+.query-result-table .header-row{background-color:#D7D7E2;border-bottom:1px solid #C7C9CE;}
+.query-result-table .header-row th{color:#5D6060; padding:4px;border-right:1px solid #959595;}
+.query-result-table .header-row th.first {border-left:1px solid #606060;}
+.query-result-table .header-row th.last {border-right:1px solid #606060;}
+
+.query-result-table .data-row{background-color:#dde6df;border-bottom:1px solid #CBCDD2;}
+.query-result-table .data-row.even{background-color:#f8e4e2;border-bottom:1px solid #E8D4D2;}
+.query-result-table .data-row td{color:#5D6060; padding-left:4px; padding-right:4px;}
+.query-result-table .data-row td.first{border-left:1px solid #606060;}
+.query-result-table .data-row td.last{border-right:1px solid #606060;}
+.query-result-table .data-row.last{border-bottom:1px solid #606060;}

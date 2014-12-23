@@ -21,11 +21,13 @@ class Order
 	public $orderno=-1;
 	public $cust_no=-1;
 	public $total_cost = 0.0;
+	public $date;
 	public $items = array();
 	public function load($orderno=-1){
 		$items = array();
-		Application::getDB()->WhileReader("select od.order_no, o.cust_no, o.total_cost, od.* from orders o left join order_details od on od.order_no=o.order_no where o.order_no = ?", function(&$r) use(&$orderno, &$cust_no, &$total_cost, &$items){
+		Application::getDB()->WhileReader("select od.order_no, o.order_date, o.cust_no, o.total_cost, od.* from orders o left join order_details od on od.order_no=o.order_no where o.order_no = ?", function(&$r) use(&$orderno, &$date, &$cust_no, &$total_cost, &$items){
 			$orderno = intval($r['order_no']);
+			$date = $r['order_date'];
 			$cust_no = intval($r['cust_no']);
 			$total_cost = floatval($r['total_cost']);
 			if($r['prod_code']!=null){
@@ -33,6 +35,7 @@ class Order
 			}
 		}, $orderno);
 		$this->orderno = $orderno;
+		$this->date = $date;
 		$this->cust_no = $cust_no;
 		$this->total_cost = $total_cost;
 		$this->items = $items;
@@ -56,7 +59,7 @@ class Order
 				array_push($items, $pm);
 			}, $this->orderno);
 			
-		return array("totalQuantity" => $items_count, "totalPrice" => $this->total_cost, "items" => $items);
+		return array("date" => $this->date, "totalQuantity" => $items_count, "totalPrice" => $this->total_cost, "items" => $items);
 		return $result;
 	}
 }

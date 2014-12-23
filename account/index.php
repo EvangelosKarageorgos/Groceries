@@ -1,13 +1,11 @@
 <?php
-require_once dirname(__FILE__)."/../Code/init.php";
-Application::getAuth()->enterProtectedPage();
-echo renderTemplate(dirname(__FILE__)."/../Templates/Account/accountMenu.php", array());
-?>
-
-
-<?php
+	require_once dirname(__FILE__)."/../Code/init.php";
+	Application::getAuth()->enterProtectedPage();
+	echo renderTemplate(dirname(__FILE__)."/../Templates/Account/accountMenu.php", array('selected'=>'userInfo'));
 	$info = Application::getAuth()->getCustomerInfo();
 ?>
+
+
 <div class="account-info">
 	<div class="field name">
 		<span class="label">Name :</span>
@@ -23,7 +21,7 @@ echo renderTemplate(dirname(__FILE__)."/../Templates/Account/accountMenu.php", a
 	</div>
 	<div class="field town">
 		<span class="label">Town :</span>
-		<span class="value"><?= $info['Address'] ?></span>
+		<span class="value"><?= $info['Town'] ?></span>
 	</div>
 	<div class="field postcode">
 		<span class="label">Post code :</span>
@@ -33,5 +31,4 @@ echo renderTemplate(dirname(__FILE__)."/../Templates/Account/accountMenu.php", a
 		<span class="label">Credit-balance :</span>
 		<span class="value"><?= $info['CreditBalance'] ?></span>
 	</div>
-
 </div>
