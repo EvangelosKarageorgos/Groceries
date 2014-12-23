@@ -31,7 +31,6 @@
 }
 
 
-
 .logoArea {
 	float: left;
 	display: block;
@@ -406,3 +405,22 @@
 	text-align: center;
 }
 
+
+
+
+
+.query-menu-category .title{
+	padding-left: 5px;
+	font-size: 14px;
+}
+
+
+.query-menu-item{
+	padding-left: 13px;
+	font-size: 12px;
+}
+
+.query-menu-item a{
+	text-decoration: none;
+	color: #333333;
+}
