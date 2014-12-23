@@ -14,7 +14,7 @@
 
 			<div>
 				<div class="logoArea">
-					<a href="<?= Application::getRequest()->getBasePath()."/home.php" ?>"/>
+					<a href="<?= Application::getRequest()->getBasePath() ?>"/>
 						<img src="<?= Application::getRequest()->getBasePath() ?>/images/general/logo.png">
 					</a>
 				</div>
