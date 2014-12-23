@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 22, 2014 at 12:06 AM
+-- Generation Time: Dec 23, 2014 at 07:28 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -60,6 +60,25 @@ begin
 	SET @isAuth = (select count(*) from Users where login=ilogin and password=ipassword);
 	if @isAuth > 0 then
 		SET @custNo = (select cust_no from Users where login=ilogin and password=ipassword limit 1);
+	end if;
+	
+	select @isAuth as IsAuth, @custNo as custNum;
+    
+end$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `user_register`(IN `ilogin` VARCHAR(50), IN `ipass` VARCHAR(50), IN `ifullname` VARCHAR(50) CHARSET utf8, IN `iemail` VARCHAR(50), IN `istreet` VARCHAR(50) CHARSET utf8, IN `itown` VARCHAR(20) CHARSET utf8, IN `ipostcode` VARCHAR(10))
+    NO SQL
+begin
+    SET @existingLogin = 0;
+	SET @custNo = -1;
+	
+	SET @existingLogin = (select count(*) from Users where login=ilogin);
+	if (@existingLogin = 0) then 
+    begin
+		INSERT INTO Users (login, password, cust_name, email, street, town, post_code, cr_limit, curr_bal)
+		VALUES (ilogin, ipass, ifullname, iemail, istreet, itown, ipostcode, 200, 0);
+		SET @custNo = LAST_INSERT_ID();		
+	end;
 	end if;
 	
 	select @isAuth as IsAuth, @custNo as custNum;
@@ -158,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `carts` (
   `IsActive` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`cartid`),
   KEY `cust_no` (`cust_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=23 ;
 
 --
 -- Dumping data for table `carts`
@@ -184,7 +203,9 @@ INSERT INTO `carts` (`cartid`, `cust_no`, `CreatedOn`, `IsActive`) VALUES
 (17, 1, '2014-12-21 13:18:16', 0),
 (18, 1, '2014-12-21 22:13:38', 0),
 (19, 1, '2014-12-21 22:18:56', 0),
-(20, 1, '2014-12-21 23:01:05', 0);
+(20, 1, '2014-12-21 23:01:05', 0),
+(21, 1, '2014-12-22 22:53:06', 1),
+(22, NULL, '2014-12-23 17:36:38', 1);
 
 -- --------------------------------------------------------
 
@@ -214,7 +235,12 @@ INSERT INTO `cart_details` (`cartid`, `prod_code`, `qty`) VALUES
 (20, 'V_001_TOM', 1),
 (20, 'V_002_CUC', 1),
 (20, 'V_003_CRT', 2),
-(20, 'V_004_CLF', 1);
+(20, 'V_004_CLF', 1),
+(21, 'V_001_TOM', 1),
+(21, 'V_005_LTC', 1),
+(21, 'V_006_RCB', 2),
+(21, 'V_007_WCB', 3),
+(22, 'V_002_CUC', 1);
 
 -- --------------------------------------------------------
 
@@ -389,8 +415,8 @@ ALTER TABLE `carts`
 -- Constraints for table `cart_details`
 --
 ALTER TABLE `cart_details`
-  ADD CONSTRAINT `cart_details_ibfk_2` FOREIGN KEY (`prod_code`) REFERENCES `products` (`prod_code`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `cart_details_ibfk_1` FOREIGN KEY (`cartid`) REFERENCES `carts` (`cartid`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `cart_details_ibfk_1` FOREIGN KEY (`cartid`) REFERENCES `carts` (`cartid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `cart_details_ibfk_2` FOREIGN KEY (`prod_code`) REFERENCES `products` (`prod_code`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `orders`
@@ -402,8 +428,8 @@ ALTER TABLE `orders`
 -- Constraints for table `order_details`
 --
 ALTER TABLE `order_details`
-  ADD CONSTRAINT `order_details_ibfk_2` FOREIGN KEY (`prod_code`) REFERENCES `products` (`prod_code`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `order_details_ibfk_1` FOREIGN KEY (`order_no`) REFERENCES `orders` (`order_no`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `order_details_ibfk_1` FOREIGN KEY (`order_no`) REFERENCES `orders` (`order_no`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `order_details_ibfk_2` FOREIGN KEY (`prod_code`) REFERENCES `products` (`prod_code`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `products`
