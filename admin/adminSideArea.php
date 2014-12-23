@@ -29,9 +29,11 @@
 						<div title="Most Expensive Product per Group" class="query-menu-item"> 
 							<a href="<?= Application::getRequest()->getBasePath()."/admin/mostExpensiveProducts.php" ?>">Expensive Products</a> 
 						</div>
+						
 						<div title="Best Sellers Products per Group" class="query-menu-item"> 
 							<a href="<?= Application::getRequest()->getBasePath()."/admin/bestSellersProducts.php" ?>">Best Sellers</a> 
 						</div>
+						
 					</div>
 			</div>
 		
@@ -44,6 +46,17 @@
 				<div class="clrfloat"> </div>
 								
 			</div>
+			
+			
+			<div class="form-field">
+				<span class="title">Logistics</span>
+					<div class="query-menu-item"> 
+						<a href="<?= Application::getRequest()->getBasePath()."/admin/underMinStockProducts.php" ?>"> Running Out Products </a> 
+					</div>				
+				<div class="clrfloat"> </div>
+								
+			</div>
+			
 			
 			<div class="clrfloat"> </div>
 			
