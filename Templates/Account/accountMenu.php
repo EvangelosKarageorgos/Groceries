@@ -8,7 +8,7 @@
 	<a href="changeDetails.php">
 		<span class="menu-item<?= strcmp($model['selected'], 'changeDetails')==0?" selected":"" ?>">Change details</span>
 	</a>
-	<?php/*<a href="changeCredentials.php">
+	<?php /*<a href="changeCredentials.php">
 		<span class="menu-item"<?= strcmp($model['selected'], 'changeCredentials')==0?" selected":"" ?>>Change credentials</span>
-	</a> */?>
+	</a> */ ?>
 </div>

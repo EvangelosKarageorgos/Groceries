@@ -1,2 +1,2 @@
-$( "input.date-input" ).datepicker();
-$( "input.date-input" ).attr('readonly', 'readonly');
+$( "input.date-picker" ).datepicker();
+$( "input.date-picker" ).attr('readonly', 'readonly');

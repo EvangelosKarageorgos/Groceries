@@ -1,11 +1,11 @@
-drop table 	cart_details;
-drop table 	carts;
-drop table 	order_details;
-drop table 	orders;
-drop table 	suppliers;
-drop table 	products;
-drop table 	product_groups;
-drop table 	users;
+drop table 	cart_details 	;
+drop table 	carts 	;
+drop table 	order_details 	;
+drop table 	orders 	;
+drop table 	product_groups 	;
+drop table 	products 	;
+drop table 	suppliers 	;
+drop table 	users 	;
 
 drop 	FUNCTION 	add_to_cart 	;
 drop 	FUNCTION 	convert_cart_to_order 	;

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 23, 2014 at 07:28 PM
+-- Generation Time: Dec 23, 2014 at 08:48 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -204,7 +204,7 @@ INSERT INTO `carts` (`cartid`, `cust_no`, `CreatedOn`, `IsActive`) VALUES
 (18, 1, '2014-12-21 22:13:38', 0),
 (19, 1, '2014-12-21 22:18:56', 0),
 (20, 1, '2014-12-21 23:01:05', 0),
-(21, 1, '2014-12-22 22:53:06', 1),
+(21, 1, '2014-12-22 22:53:06', 0),
 (22, NULL, '2014-12-23 17:36:38', 1);
 
 -- --------------------------------------------------------
@@ -238,8 +238,6 @@ INSERT INTO `cart_details` (`cartid`, `prod_code`, `qty`) VALUES
 (20, 'V_004_CLF', 1),
 (21, 'V_001_TOM', 1),
 (21, 'V_005_LTC', 1),
-(21, 'V_006_RCB', 2),
-(21, 'V_007_WCB', 3),
 (22, 'V_002_CUC', 1);
 
 -- --------------------------------------------------------
@@ -255,17 +253,18 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `total_cost` decimal(10,2) NOT NULL,
   PRIMARY KEY (`order_no`),
   KEY `cust_no` (`cust_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`order_no`, `order_date`, `cust_no`, `total_cost`) VALUES
-(4, '2014-12-21 22:10:28', 1, '10.50'),
-(5, '2014-12-21 22:17:47', 1, '38.00'),
-(8, '2014-12-21 22:22:04', 1, '45.50'),
-(9, '2014-12-21 23:01:30', 1, '10.00');
+(4, '2014-12-21 22:10:28', 2, '10.50'),
+(5, '2014-12-21 22:17:47', 2, '38.00'),
+(8, '2014-12-21 22:22:04', 2, '45.50'),
+(9, '2014-12-21 23:01:30', 2, '10.00'),
+(10, '2014-12-23 18:51:37', 2, '5.00');
 
 -- --------------------------------------------------------
 
@@ -295,7 +294,9 @@ INSERT INTO `order_details` (`order_no`, `prod_code`, `order_qty`, `order_sum`) 
 (9, 'V_001_TOM', 1, '3.00'),
 (9, 'V_002_CUC', 1, '1.00'),
 (9, 'V_003_CRT', 2, '3.00'),
-(9, 'V_004_CLF', 1, '3.00');
+(9, 'V_004_CLF', 1, '3.00'),
+(10, 'V_001_TOM', 1, '3.00'),
+(10, 'V_005_LTC', 1, '2.00');
 
 -- --------------------------------------------------------
 
@@ -324,11 +325,11 @@ CREATE TABLE IF NOT EXISTS `products` (
 INSERT INTO `products` (`prod_code`, `name`, `description`, `prod_group`, `list_price`, `qty_on_hand`, `procur_level`, `procur_qty`, `imageUrl`) VALUES
 ('S_001_TUN', 'Tuna', 'Tuna fish', 'S', '151.00', 6, 3, 20, NULL),
 ('S_002_OCT', 'Octopus', 'Fresh octopus fished at Calymnos', 'S', '30.50', 6, 2, 10, NULL),
-('V_001_TOM', 'Tomato', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 5, 10, 10, '/images/products/tomato.jpg'),
+('V_001_TOM', 'Tomato', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 4, 10, 10, '/images/products/tomato.jpg'),
 ('V_002_CUC', 'Cucumber', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\nTrtrwe sdfs dfwe wer sdsvsdfsd', 'V', '1.00', 1, 5, 5, '/images/products/cucumber.jpg'),
 ('V_003_CRT', 'Carrot', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nCarrots', 'V', '1.50', 7, 10, 15, '/images/products/carrots.jpg'),
 ('V_004_CLF', 'Cauliflower', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 0, 10, 5, '/images/products/cauliflower.jpg'),
-('V_005_LTC', 'Lettuce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '2.00', 10, 10, 10, '/images/products/lettuce.jpg'),
+('V_005_LTC', 'Lettuce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '2.00', 9, 10, 10, '/images/products/lettuce.jpg'),
 ('V_006_RCB', 'Red Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '5.00', 10, 7, 3, '/images/products/cabbage_red.jpg'),
 ('V_007_WCB', 'Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum.', 'V', '2.00', 20, 5, 10, '/images/products/cabbage_white.jpg'),
 ('V_008_BRC', 'Broccoli', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nTRwewrsfdfs sdf werrtt dfg dfg wewe weerdfg', 'V', '7.50', 1, 10, 5, '/images/products/broccoli.jpg');
@@ -390,16 +391,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   `post_code` varchar(10) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `cr_limit` decimal(10,0) NOT NULL,
   `curr_bal` decimal(10,0) NOT NULL DEFAULT '0',
+  `IsAdmin` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`cust_no`),
   UNIQUE KEY `login` (`login`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`cust_no`, `login`, `password`, `cust_name`, `email`, `street`, `town`, `post_code`, `cr_limit`, `curr_bal`) VALUES
-(1, 'angello', '1234', 'Angello Karageorgos', 'ibz-angello@hotmail.com', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '200', '0');
+INSERT INTO `users` (`cust_no`, `login`, `password`, `cust_name`, `email`, `street`, `town`, `post_code`, `cr_limit`, `curr_bal`, `IsAdmin`) VALUES
+(1, 'admin', 'admin', 'Store manager', 'admin@groceries.gr', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '200', '0', 1),
+(2, 'angello', '1234', 'Angello Karageorgos', 'ibz-angello@hotmail.com', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '200', '0', 0);
 
 --
 -- Constraints for dumped tables

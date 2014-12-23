@@ -127,7 +127,10 @@ class Authentication
 			WebTools::redirect(Application::getRequest()->getBasePath()."/login.php?dst=".$dst);
 		}
 	}
-	
+
+	public function enterAdminPage(){
+		return $this->isAuthenticated();
+	}	
 	public function getCustomerInfo(){
 		$result = array();
 		Application::getDB()->WhileReader("select * from users where cust_no=?", function(&$r) use (&$result){

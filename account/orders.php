@@ -14,11 +14,9 @@ echo renderTemplate(dirname(__FILE__)."/../Templates/Account/accountMenu.php", a
 		$orderModel['itemTemplate'] = dirname(__FILE__)."/../Templates/Account/OrderItem.php";
 		array_push($orders, $orderModel);
 	}, Application::getAuth()->getCustomerNum());
-	//$orders['itemTemplate'] = dirname(__FILE__)."/../Templates/Account/OrdersListItem.php";
 	
 	foreach($orders as &$order){
 		echo renderTemplate(dirname(__FILE__)."/../Templates/Account/Order.php", $order);
-		
 	}
-	var_dump($orders);
+
 ?>

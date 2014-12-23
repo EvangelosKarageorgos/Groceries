@@ -1,4 +1,5 @@
 <?php includeHeadResource(new StyleResource(Application::getRequest()->getBasePath()."/styles/style.css")); ?>
+<?php includeHeadResource(new StyleResource(Application::getRequest()->getBasePath()."/styles/db.css")); ?>
 <?php includeHeadResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/jquery-1.11.1.min.js")); ?>
 <?php includeHeadResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/jquery-ui.min.js")); ?>
 <?php includeHeadResource(new StyleResource(Application::getRequest()->getBasePath()."/styles/jquery-ui.min.css")); ?>

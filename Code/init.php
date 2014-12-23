@@ -3,6 +3,7 @@ require_once dirname(__FILE__)."/Application.php";
 require_once dirname(__FILE__)."/Template.php";
 require_once dirname(__FILE__)."/WebTools.php";
 
+require_once dirname(__FILE__)."/GroceriesTools.php";
 require_once dirname(__FILE__)."/Product.php";
 require_once dirname(__FILE__)."/Group.php";
 require_once dirname(__FILE__)."/Order.php";
