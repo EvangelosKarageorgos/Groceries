@@ -20,7 +20,7 @@ class GroceriesTools
 	public static function getAdminBasicQueryControls(){
 		$dateFrom = GroceriesTools::getDatePickerParam("date-from", time() - 3600 * 24*7);
 		$dateTo = GroceriesTools::getDatePickerParam("date-to", time());
-		$resultsCount = GroceriesTools::getDatePickerParam("results-count", 10);
+		$resultsCount = GroceriesTools::getIntegerParam("results-count", 10);
 		$model = array('dateFrom' => $dateFrom, 'dateTo' => $dateTo, 'resultsCount' => $resultsCount);
 		$markup = renderTemplate(dirname(__FILE__)."/../Templates/Admin/basicQueryControls.php", $model);
 		$model['dateFrom'] = self::getSqlDate($model['dateFrom']);
