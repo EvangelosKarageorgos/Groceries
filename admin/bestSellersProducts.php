@@ -19,7 +19,8 @@ Application::getAuth()->enterProtectedPage();
 								." INNER JOIN products prd ON (prd.prod_code=order_details.prod_code) "
 								." INNER JOIN product_groups prg ON (prd.prod_group=prg.group_code) "
 								." WHERE order_date between '?' and '?' " 
-								." GROUP BY product_groups.group_code, prd.prod_code " 
+								."         AND prg.group_code = prod.prod_group "
+								." GROUP BY prg.group_code, prd.prod_code " 
 								." ORDER BY  SUM(order_details.order_sum) desc " 
 								." LIMIT 1 "				
 				."			) 	"
@@ -28,7 +29,7 @@ Application::getAuth()->enterProtectedPage();
 		
 
 	
-	$results = Application::getDB()->ExecuteDataTable($queryString);
+	$results = Application::getDB()->ExecuteDataTable($queryString, $queryControls['model']['dateFrom'], $queryControls['model']['dateTo'], $queryControls['model']['dateFrom'], $queryControls['model']['dateTo']);
 
 ?>
 
