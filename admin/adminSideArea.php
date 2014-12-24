@@ -53,6 +53,12 @@
 					<div class="query-menu-item"> 
 						<a href="<?= Application::getRequest()->getBasePath()."/admin/underMinStockProducts.php" ?>"> Running Out Products </a> 
 					</div>				
+					<div class="query-menu-item"> 
+						<a href="<?= Application::getRequest()->getBasePath()."/admin/pendingOrders.php" ?>"> Pending Orders </a> 
+					</div>				
+					<div class="query-menu-item"> 
+						<a href="<?= Application::getRequest()->getBasePath()."/admin/supplyProducts.php" ?>"> Supply Products </a> 
+					</div>				
 				<div class="clrfloat"> </div>
 								
 			</div>

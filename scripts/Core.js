@@ -66,3 +66,17 @@ function validateEmail(email) {
     return re.test(email);
 } 
 
+function growDiv(element) {
+    var growDiv = element;
+    if (growDiv.clientHeight) {
+      growDiv.style.height = 0;
+    } else {
+      var wrapper = $(growDiv).childNodes()[0];
+      growDiv.style.height = wrapper.clientHeight + "px";
+    }
+  }
+function toggleExpander(element){
+	var content = $(element).siblings('.expandable-content');
+//	content.toggleClass('expanded');
+	content.slideToggle(500, function(){});
+}

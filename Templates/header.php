@@ -5,6 +5,7 @@
 <?php includeHeadResource(new StyleResource(Application::getRequest()->getBasePath()."/styles/jquery-ui.min.css")); ?>
 <?php includeHeadResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/Core.js")); ?>
 <?php includeHeadResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/cart.js")); ?>
+<?php includeHeadResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/admin.js")); ?>
 <?php includeFootResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/foot.js")); ?>
 <?php includeFootResource(new ScriptResource(Application::getRequest()->getBasePath()."/scripts/search.js")); ?>
 <script>BasePath = "<?= Application::getRequest()->getBasePath() ?>";</script>

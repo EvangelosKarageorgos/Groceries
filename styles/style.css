@@ -405,6 +405,7 @@
 	text-align: center;
 }
 
+.expander{margin:0px auto; display:block;}
 
 
 .resultNumberField{ 
@@ -417,6 +418,26 @@
 	margin-right:5px;
 }
 
+.order-box{width:100%%; margin:2px auto; background-color:#e7edeb; border: 1px solid #dbe6e1;}
+.order-box .summary{width:100%;}
+.order-box .summary .field{float:left; width:150px;}
+.order-box .summary .field.date{float:left; width:200px;}
+
+.order-box .summary .field .label{font-weight:bold;}
+.order-box  .expander{margin:0px auto; width:50px;}
+
+.order-box .details{width:75%;}
+.order-box .details .items-table{width:100%;text-align:center;}
+.order-box .details .product{text-align:left;}
+.order-box .details .order-item .product .info-column{float:left;}
+
+
+.account-menu .menu-item{display:block; margin:1px; background-color:#e7edeb; border:1px solid #dbe6e1}
+.account-menu .menu-item.selected{background-color:#dbe6e1;}
+.account-menu .menu-item:hover{background-color:#dbe6e1;}
+
+.account-menu .menu-item a{text-decoration:none;}
+.account-menu .menu-item span{text-decoration:none;}
 
 
 
