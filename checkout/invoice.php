@@ -16,5 +16,6 @@
 
 ?>
 <div class="checkout-form">
+	<h4>Your order has been submitted</h4>
 	<?= $invoice ?>
 </div>

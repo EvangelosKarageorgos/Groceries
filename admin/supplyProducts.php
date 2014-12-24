@@ -11,17 +11,24 @@ Application::getAuth()->enterAdminPage();
 	});
 	
 	$productsModel = array();
-	Application::getDB()->ExecuteDataTable("select prod_code, name, procur_qty from products where qty_on_hand < procur_level", function(&$r) use(&$productsModel, &$suppliersModel){
-		$productsModel[] = array('prodCode' => $r['prod_code'], 'name' => $r['name'], 'qty' => 'procur_qty', 'suppliers' => $suppliersModel);
+	Application::getDB()->WhileReader("select prod_code, name, procur_qty from products where qty_on_hand < procur_level", function(&$r) use(&$productsModel, &$suppliersModel){
+		$productsModel[] = array('prodCode' => $r['prod_code'], 'name' => $r['name'], 'qty' => $r['procur_qty'], 'suppliers' => $suppliersModel);
 	});
-	var_dump($suppliersModel);
 ?>
 
 <?= renderTemplate(dirname(__FILE__)."/adminSideArea.php", array()) ?>
+<?php if(strlen(Application::getRequest()->getPostParam("submittype", ""))==0) { ?>
 <div class="itemArea">
 	<?php
 		foreach($productsModel as &$p){
 			echo renderTemplate(dirname(__FILE__)."/../Templates/Admin/ProductToSupply.php", $p);
 		}
 	?>
+	<form method="POST">
+		<input type="hidden" name="submittype" value="add-supplier" />
+		<input type="text" name="suppliername" value="" placeholder="name" />
+		<input type="submit" class="croceriesBtn" value="Add supplier" />
+	</form>
+	
 </div>
+<?php } ?>

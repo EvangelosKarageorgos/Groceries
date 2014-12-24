@@ -27,6 +27,39 @@ class GroceriesTools
 		$model['dateTo'] = self::getSqlDate($model['dateTo']). ' 23:59:59';
 		return array('markup' => $markup, 'model' => $model);
 	}
+
+	public static function searchSeperation(&$table, $searchSet, &$element, &$target, $sep){
+	$first = true;
+	$nextSearch = 0;
+	var_dump($searchSet);
+	//var_dump($element);
+	foreach($searchSet as $key){
+		if($first){
+			$nextSearch = $key;
+			$first = false;
+		}
+		$tvalue = $table[$key];
+		$f = false;
+		var_dump($element);
+		var_dump($tvalue);
+		foreach($element as $pc){
+			if(in_array($pc, $tvalue)){
+				return $sep+1;
+			}
+		}
+		$newSearchSet = $searchSet;
+		if (($k = array_search($key, $newSearchSet)) !== false) {
+			unset($newSearchSet[$k]);
+		}
+		var_dump($newSearchSet);
+		$s = self::searchSeperation($table, $newSearchSet, $tvalue, $target, $sep+1);
+		if($s>0)
+			return $s;
+		return -1;
+	}
+	
+}
+
 	
 }
 

@@ -33,7 +33,9 @@
 						<div title="Best Sellers Products per Group" class="query-menu-item"> 
 							<a href="<?= Application::getRequest()->getBasePath()."/admin/bestSellersProducts.php" ?>">Best Sellers</a> 
 						</div>
-						
+						<div class="query-menu-item"> 
+							<a href="<?= Application::getRequest()->getBasePath()."/admin/suppliersSeperation.php" ?>"> Suppliers Seperation </a> 
+						</div>							
 					</div>
 			</div>
 		
