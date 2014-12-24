@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 23, 2014 at 08:48 PM
+-- Generation Time: Dec 24, 2014 at 12:41 AM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -24,6 +24,23 @@ DELIMITER $$
 --
 -- Procedures
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `cancel_order`(IN `iorder_no` INT)
+    NO SQL
+begin
+	if exists (select * from orders where order_no-iorder_no and is_valid=1 and is_completed=0) then
+    begin
+    	update order_details od inner join products p on p.prod_code=od.prod_code set p.qty_on_hand = p.qty_on_hand + od.order_qty where od.order_no=iorder_no;
+        update orders o inner join users u on u.cust_no=o.cust_no set u.curr_bal = u.curr_bal - o.total_cost, o.is_valid=0 where o.order_no=iorder_no;
+    end;
+    end if;
+end$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `create_transaction`(IN `iorder_no` INT, IN `icreditcard_no` VARCHAR(50))
+    NO SQL
+begin
+	insert into transactions(order_no, creditcard_no, transaction_sum) values (iorder_no, icreditcard_no, (select total_cost from orders where order_no=iorder_no));
+end$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `get_cart`(IN `icartid` INT, IN `icust_no` INT)
     DETERMINISTIC
 begin
@@ -51,18 +68,20 @@ begin
 	select c.cartid as cart_id, c.cust_no, cd.* from carts c left join cart_details cd on cd.cartid=c.cartid where c.cartid = @cartid;
 end$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `user_login`(IN `ilogin` varchar(50), IN `ipassword` varchar(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `user_login`(IN `ilogin` VARCHAR(50), IN `ipassword` VARCHAR(50))
     DETERMINISTIC
 begin
     SET @isAuth = 0;
+    SET @isAdmin = 0;
 	SET @custNo = -1;
 	
 	SET @isAuth = (select count(*) from Users where login=ilogin and password=ipassword);
 	if @isAuth > 0 then
 		SET @custNo = (select cust_no from Users where login=ilogin and password=ipassword limit 1);
+		SET @isAdmin = (select IsAdmin from Users where cust_no=@custNo limit 1);
 	end if;
 	
-	select @isAuth as IsAuth, @custNo as custNum;
+	select @isAuth as IsAuth, @isAdmin as IsAdmin, @custNo as custNum;
     
 end$$
 
@@ -136,6 +155,21 @@ begin
     END iF;
 end$$
 
+CREATE DEFINER=`root`@`localhost` FUNCTION `complete_order`(`iorder_no` INT) RETURNS tinyint(1)
+    NO SQL
+begin
+	if exists (select * from orders o inner join transactions t on t.order_no=o.order_no where o.order_no=iorder_no and o.is_valid=1 and o.is_completed=0) then
+    begin
+		update orders o inner join transactions t on t.order_no=o.order_no inner join users u on u.cust_no=o.cust_no set t.is_validated=1, o.is_completed=1, u.cr_limit = u.cr_limit + t.transaction_sum * 0.1, u.curr_bal = u.curr_bal - t.transaction_sum where o.order_no=iorder_no;
+        return 1;
+    end;
+    else
+    begin
+    	return 0;
+    end;
+    end if;
+end$$
+
 CREATE DEFINER=`root`@`localhost` FUNCTION `convert_cart_to_order`(`icartid` INT) RETURNS int(11)
     MODIFIES SQL DATA
 begin
@@ -147,6 +181,17 @@ begin
         delete from cart_details where cartid=@cartid and qty<=0;
         
 		set @total_cost = (select sum(p.list_price*cd.qty) from cart_details cd inner join products p on p.prod_code=cd.prod_code where cd.cartid=icartid);
+        
+        if (select cr_limit - curr_bal from users where cust_no=@cust_no) < @total_cost then
+        begin
+            return -2;
+        end;
+        else
+        begin
+            update users set curr_bal = curr_bal + @total_cost where cust_no=@cust_no;
+        end;
+        end if;
+        
 		insert into orders (cust_no, total_cost) values (@cust_no, @total_cost);
 		set @order_no = LAST_INSERT_ID();
 		insert into order_details select (@order_no) as order_no, p.prod_code, cd.qty as order_qty, (cd.qty*p.list_price) as order_sum from cart_details cd inner join products p on p.prod_code=cd.prod_code where cd.cartid=icartid;
@@ -177,7 +222,7 @@ CREATE TABLE IF NOT EXISTS `carts` (
   `IsActive` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`cartid`),
   KEY `cust_no` (`cust_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=36 ;
 
 --
 -- Dumping data for table `carts`
@@ -205,7 +250,20 @@ INSERT INTO `carts` (`cartid`, `cust_no`, `CreatedOn`, `IsActive`) VALUES
 (19, 1, '2014-12-21 22:18:56', 0),
 (20, 1, '2014-12-21 23:01:05', 0),
 (21, 1, '2014-12-22 22:53:06', 0),
-(22, NULL, '2014-12-23 17:36:38', 1);
+(22, NULL, '2014-12-23 17:36:38', 1),
+(23, 2, '2014-12-23 20:53:27', 0),
+(24, 2, '2014-12-23 20:54:24', 0),
+(25, 2, '2014-12-23 20:56:17', 0),
+(26, 2, '2014-12-23 20:58:36', 0),
+(27, 2, '2014-12-23 20:59:41', 0),
+(28, 2, '2014-12-23 21:23:08', 0),
+(29, 2, '2014-12-23 21:26:13', 0),
+(30, 2, '2014-12-23 21:28:45', 0),
+(31, 2, '2014-12-23 22:52:19', 0),
+(32, 2, '2014-12-23 22:53:37', 0),
+(33, 2, '2014-12-23 22:54:31', 0),
+(34, 2, '2014-12-23 22:55:33', 0),
+(35, 2, '2014-12-23 22:56:34', 0);
 
 -- --------------------------------------------------------
 
@@ -238,7 +296,23 @@ INSERT INTO `cart_details` (`cartid`, `prod_code`, `qty`) VALUES
 (20, 'V_004_CLF', 1),
 (21, 'V_001_TOM', 1),
 (21, 'V_005_LTC', 1),
-(22, 'V_002_CUC', 1);
+(22, 'V_002_CUC', 1),
+(23, 'V_002_CUC', 1),
+(23, 'V_003_CRT', 1),
+(24, 'S_001_TUN', 1),
+(24, 'S_002_OCT', 1),
+(25, 'V_003_CRT', 1),
+(25, 'V_005_LTC', 1),
+(26, 'S_002_OCT', 1),
+(27, 'V_003_CRT', 1),
+(28, 'S_001_TUN', 1),
+(29, 'V_003_CRT', 4),
+(30, 'S_001_TUN', 1),
+(31, 'V_005_LTC', 1),
+(32, 'V_001_TOM', 1),
+(33, 'V_001_TOM', 1),
+(34, 'V_001_TOM', 1),
+(35, 'S_001_TUN', 1);
 
 -- --------------------------------------------------------
 
@@ -251,20 +325,35 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `order_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `cust_no` int(11) NOT NULL,
   `total_cost` decimal(10,2) NOT NULL,
+  `is_completed` tinyint(1) NOT NULL DEFAULT '0',
+  `is_valid` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`order_no`),
   KEY `cust_no` (`cust_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=24 ;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`order_no`, `order_date`, `cust_no`, `total_cost`) VALUES
-(4, '2014-12-21 22:10:28', 2, '10.50'),
-(5, '2014-12-21 22:17:47', 2, '38.00'),
-(8, '2014-12-21 22:22:04', 2, '45.50'),
-(9, '2014-12-21 23:01:30', 2, '10.00'),
-(10, '2014-12-23 18:51:37', 2, '5.00');
+INSERT INTO `orders` (`order_no`, `order_date`, `cust_no`, `total_cost`, `is_completed`, `is_valid`) VALUES
+(4, '2014-12-21 22:10:28', 2, '10.50', 0, 1),
+(5, '2014-12-21 22:17:47', 2, '38.00', 0, 1),
+(8, '2014-12-21 22:22:04', 2, '45.50', 0, 1),
+(9, '2014-12-21 23:01:30', 2, '10.00', 0, 0),
+(10, '2014-12-23 18:51:37', 2, '5.00', 0, 1),
+(11, '2014-12-23 20:53:43', 2, '2.50', 0, 0),
+(12, '2014-12-23 20:55:27', 2, '181.50', 0, 1),
+(13, '2014-12-23 20:56:27', 2, '3.50', 0, 1),
+(14, '2014-12-23 20:59:36', 2, '30.50', 0, 1),
+(15, '2014-12-23 21:22:45', 2, '1.50', 0, 1),
+(16, '2014-12-23 21:23:27', 2, '151.00', 0, 1),
+(17, '2014-12-23 21:28:15', 2, '6.00', 0, 1),
+(18, '2014-12-23 21:29:09', 2, '151.00', 0, 1),
+(19, '2014-12-23 22:53:06', 2, '2.00', 0, 1),
+(20, '2014-12-23 22:54:04', 2, '3.00', 0, 1),
+(21, '2014-12-23 22:54:50', 2, '3.00', 0, 1),
+(22, '2014-12-23 22:55:49', 2, '3.00', 0, 0),
+(23, '2014-12-23 22:56:50', 2, '151.00', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -296,7 +385,23 @@ INSERT INTO `order_details` (`order_no`, `prod_code`, `order_qty`, `order_sum`) 
 (9, 'V_003_CRT', 2, '3.00'),
 (9, 'V_004_CLF', 1, '3.00'),
 (10, 'V_001_TOM', 1, '3.00'),
-(10, 'V_005_LTC', 1, '2.00');
+(10, 'V_005_LTC', 1, '2.00'),
+(11, 'V_002_CUC', 1, '1.00'),
+(11, 'V_003_CRT', 1, '1.50'),
+(12, 'S_001_TUN', 1, '151.00'),
+(12, 'S_002_OCT', 1, '30.50'),
+(13, 'V_003_CRT', 1, '1.50'),
+(13, 'V_005_LTC', 1, '2.00'),
+(14, 'S_002_OCT', 1, '30.50'),
+(15, 'V_003_CRT', 1, '1.50'),
+(16, 'S_001_TUN', 1, '151.00'),
+(17, 'V_003_CRT', 4, '6.00'),
+(18, 'S_001_TUN', 1, '151.00'),
+(19, 'V_005_LTC', 1, '2.00'),
+(20, 'V_001_TOM', 1, '3.00'),
+(21, 'V_001_TOM', 1, '3.00'),
+(22, 'V_001_TOM', 1, '3.00'),
+(23, 'S_001_TUN', 1, '151.00');
 
 -- --------------------------------------------------------
 
@@ -323,13 +428,13 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`prod_code`, `name`, `description`, `prod_group`, `list_price`, `qty_on_hand`, `procur_level`, `procur_qty`, `imageUrl`) VALUES
-('S_001_TUN', 'Tuna', 'Tuna fish', 'S', '151.00', 6, 3, 20, NULL),
-('S_002_OCT', 'Octopus', 'Fresh octopus fished at Calymnos', 'S', '30.50', 6, 2, 10, NULL),
+('S_001_TUN', 'Tuna', 'Tuna fish', 'S', '151.00', 2, 3, 20, NULL),
+('S_002_OCT', 'Octopus', 'Fresh octopus fished at Calymnos', 'S', '30.50', 4, 2, 10, NULL),
 ('V_001_TOM', 'Tomato', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 4, 10, 10, '/images/products/tomato.jpg'),
-('V_002_CUC', 'Cucumber', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\nTrtrwe sdfs dfwe wer sdsvsdfsd', 'V', '1.00', 1, 5, 5, '/images/products/cucumber.jpg'),
-('V_003_CRT', 'Carrot', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nCarrots', 'V', '1.50', 7, 10, 15, '/images/products/carrots.jpg'),
-('V_004_CLF', 'Cauliflower', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 0, 10, 5, '/images/products/cauliflower.jpg'),
-('V_005_LTC', 'Lettuce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '2.00', 9, 10, 10, '/images/products/lettuce.jpg'),
+('V_002_CUC', 'Cucumber', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\nTrtrwe sdfs dfwe wer sdsvsdfsd', 'V', '1.00', 2, 5, 5, '/images/products/cucumber.jpg'),
+('V_003_CRT', 'Carrot', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nCarrots', 'V', '1.50', 3, 10, 15, '/images/products/carrots.jpg'),
+('V_004_CLF', 'Cauliflower', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 1, 10, 5, '/images/products/cauliflower.jpg'),
+('V_005_LTC', 'Lettuce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '2.00', 7, 10, 10, '/images/products/lettuce.jpg'),
 ('V_006_RCB', 'Red Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '5.00', 10, 7, 3, '/images/products/cabbage_red.jpg'),
 ('V_007_WCB', 'Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum.', 'V', '2.00', 20, 5, 10, '/images/products/cabbage_white.jpg'),
 ('V_008_BRC', 'Broccoli', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nTRwewrsfdfs sdf werrtt dfg dfg wewe weerdfg', 'V', '7.50', 1, 10, 5, '/images/products/broccoli.jpg');
@@ -377,6 +482,30 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `transactions`
+--
+
+CREATE TABLE IF NOT EXISTS `transactions` (
+  `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_no` int(11) NOT NULL,
+  `creditcard_no` varchar(50) COLLATE utf8_bin NOT NULL,
+  `transaction_sum` decimal(10,0) NOT NULL DEFAULT '0',
+  `transaction_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_validated` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`transaction_id`),
+  KEY `order_no` (`order_no`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`transaction_id`, `order_no`, `creditcard_no`, `transaction_sum`, `transaction_date`, `is_validated`) VALUES
+(1, 23, '123456', '151', '2014-12-23 22:56:50', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -402,7 +531,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`cust_no`, `login`, `password`, `cust_name`, `email`, `street`, `town`, `post_code`, `cr_limit`, `curr_bal`, `IsAdmin`) VALUES
 (1, 'admin', 'admin', 'Store manager', 'admin@groceries.gr', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '200', '0', 1),
-(2, 'angello', '1234', 'Angello Karageorgos', 'ibz-angello@hotmail.com', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '200', '0', 0);
+(2, 'angello', '1234', 'Angello Karageorgos', 'ibz-angello@hotmail.com', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '215', '-7', 0);
 
 --
 -- Constraints for dumped tables
@@ -439,6 +568,12 @@ ALTER TABLE `order_details`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`prod_group`) REFERENCES `product_groups` (`group_code`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `transactions`
+--
+ALTER TABLE `transactions`
+  ADD CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`order_no`) REFERENCES `orders` (`order_no`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

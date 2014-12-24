@@ -3,6 +3,7 @@ class Authentication
 {
 	private $_custNo = 0;
 	private $_isAuthenticated = false;
+	private $_isAdmin = false;
 	private $_isAuthEvaluated = false;
 	
 	public function initialize(){
@@ -11,13 +12,15 @@ class Authentication
 	private function readSession(){
 		session_name("Auth");
 		session_start();	
-		$this->IsAuthenticated = false;
+		$this->_isAuthenticated = false;
 		$this->_custNo = -1;
 		if(isset($_SESSION)){
 			if(isset($_SESSION["IsAuthenticated"]) && $_SESSION["IsAuthenticated"]){
 				if(isset($_SESSION["cust_no"])){
 					$this->_isAuthenticated = true;
 					$this->_custNo = $_SESSION["cust_no"];
+					if(isset($_SESSION["IsAdmin"]))
+						$this->_isAdmin = $_SESSION["IsAdmin"];
 				}
 			}
 		}
@@ -33,6 +36,7 @@ class Authentication
 		$result = 0;
 		
 		$isAuth = false;
+		$isAdmin = false;
 		$custNo = -1;
 		
 		if(!strlen($userName)>0 || !strlen($passWord)>0 || !strlen($fullName)>0 || !strlen($eMail.'')>0 
@@ -48,6 +52,7 @@ class Authentication
 				if($userNotExists){
 					$result = 0;
 					$isAuth = true;
+					$isAdmin = false;
 					$custNo = intval($r["custNum"]);
 				}
 				else {
@@ -58,19 +63,15 @@ class Authentication
 			
 		
 		}
-		
-		
-				
 
-
-		
 		$_SESSION["cust_no"] = $custNo;
 		$_SESSION["IsAuthenticated"] = $isAuth;
+		$_SESSION["IsAdmin"] = $isAdmin;
 		session_write_close();
 		$this->_isAuthenticated = $isAuth;
+		$this->_isAdmin = $isAdmin;
 		$this->_custNo = $custNo;
 		$this->_isAuthEvaluated = true;
-		
 		return $result;
 	}
 	
@@ -80,18 +81,22 @@ class Authentication
 		session_start();
 		
 		$isAuth = false;
+		$isAdmin = false;
 		$custNo = -1;
 		
-		Application::getDB()->WhileReader("call user_login('?', '?')", function(&$r) use(&$isAuth, &$custNo){
+		Application::getDB()->WhileReader("call user_login('?', '?')", function(&$r) use(&$isAuth, &$isAdmin, &$custNo){
 			$isAuth = intval($r["IsAuth"])>0;
-			if($isAuth)
+			if($isAuth){
+				$isAdmin = intval($r["IsAdmin"])>0;
 				$custNo = intval($r["custNum"]);
+			}
 		}, $username, $password);
-		
 		$_SESSION["cust_no"] = $custNo;
 		$_SESSION["IsAuthenticated"] = $isAuth;
+		$_SESSION["IsAdmin"] = $isAdmin;
 		session_write_close();
 		$this->_isAuthenticated = $isAuth;
+		$this->_isAdmin = $isAdmin;
 		$this->_custNo = $custNo;
 		$this->_isAuthEvaluated = true;
 	}
@@ -101,8 +106,10 @@ class Authentication
 		session_start();
 		$_SESSION["cust_no"] = -1;
 		$_SESSION["IsAuthenticated"] = false;
+		$_SESSION["IsAdmin"] = false;
 		$this->_custNo = -1;
 		$this->_isAuthenticated = false;
+		$this->_isAdmin = false;
 		$this->_isAuthEvaluated = false;
 	}
 	
@@ -111,6 +118,10 @@ class Authentication
 			$this->readSession();
 		}
 		return $this->_isAuthenticated;
+	}
+	
+	public function isAdmin(){
+		return $this->isAuthenticated() && $this->_isAdmin;
 	}
 	
 	public function getCustomerNum(){
@@ -129,7 +140,10 @@ class Authentication
 	}
 
 	public function enterAdminPage(){
-		return $this->isAuthenticated();
+		$this->enterProtectedPage();
+		if(!$this->isAdmin()){
+			WebTools::redirect(Application::getRequest()->getBasePath());
+		}
 	}	
 	public function getCustomerInfo(){
 		$result = array();

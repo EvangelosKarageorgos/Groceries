@@ -1,16 +1,10 @@
 <?php
-require_once "Code/Init.php";
-
-
+require_once dirname(__FILE__)."/Code/init.php";
 ?>
-<html>
-<head></head>
-<body>
-	<?php
-		echo new Product('V_001_TOM');
-		//$dt = Application::db()->ExecuteDatatable("select * from PRODUCTS");
-		//echo $dt->toHtml();
-	?>
-</body>
-</html>
 
+
+<?php
+	$m = array();
+	echo renderTemplate(dirname(__FILE__)."/Templates/Search/searchArea.php", $m);
+	echo renderTemplate(dirname(__FILE__)."/Templates/Search/itemArea.php", $m);
+?>

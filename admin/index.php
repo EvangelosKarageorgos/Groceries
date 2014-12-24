@@ -1,6 +1,6 @@
 <?php
 require_once dirname(__FILE__)."/../Code/init.php";
-Application::getAuth()->enterProtectedPage();
+Application::getAuth()->enterAdminPage();
 ?>
 
 

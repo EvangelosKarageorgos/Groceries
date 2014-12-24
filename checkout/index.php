@@ -4,22 +4,25 @@
 	Application::getAuth()->enterProtectedPage();
 
 	$cart = Application::getCartManager()->getCart();
+	$paymentMethod=0;
+	$cardno = '';
 	
 	if(strcmp(Application::getRequest()->getPostParam("submitorder", ""), "true")==0){
 		$cartid = intval(Application::getRequest()->getPostParam("cartid", "-1"));
-		$custumerno = intval(Application::getRequest()->getPostParam("customerno", "-1"));
+		$customerno = intval(Application::getRequest()->getPostParam("customerno", "-1"));
 		$cardno = Application::getRequest()->getPostParam("cardno", "");
 		$agree = Application::getRequest()->getPostParam("agree", "");
 		if(		$cartid == $cart->cartid
-			&&	$custumerno == Application::getAuth()->getCustomerNum()
+			&&	$customerno == Application::getAuth()->getCustomerNum()
 			&&	strlen($cardno)>0
 			&&	strcmp($agree, "yes")==0
 			)
 		{
 			var_dump("Submitting order...");
-			var_dump($cartid);
 			$order_no = Application::getDB()->ExecuteScalar("select convert_cart_to_order(?)", $cartid);
+			var_dump($order_no);
 			if($order_no>=0){
+				Application::getDB()->ExecuteNonQuery("call create_transaction(?, '?')", $order_no, $cardno);
 				WebTools::redirect(Application::getRequest()->getBasePath()."/checkout/invoice.php?orderno=".$order_no);
 			}
 		}
@@ -28,7 +31,6 @@
 	$cartModel = $cart->toModel();
 	$cartModel['itemTemplate'] = dirname(__FILE__)."/../Templates/OrderCartItem.php";
 	
-	$cardno = "grgerger";
 	$invoice = renderTemplate(dirname(__FILE__)."/../Templates/OrderCart.php", $cartModel);
 
 ?>
