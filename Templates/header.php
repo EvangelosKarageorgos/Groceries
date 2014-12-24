@@ -26,8 +26,10 @@
 		$showLoginWidget = false;
 	else{
 		$isAuthenticated = Application::getAuth()->isAuthenticated();
+		$isAdmin = Application::getAuth()->isAdmin();
 		$m = array();
 		$m["IsAuthenticated"] = $isAuthenticated;
+		$m["IsAdmin"] = $isAdmin;
 		$m["LoginUrl"] = WebTools::getPagePath()."login.php?dst=".WebTools::urlEncode(WebTools::getPageUrl());
 		$m["RegisterUrl"] = WebTools::getPagePath()."register.php?dst=".WebTools::urlEncode(WebTools::getPageUrl());
 		if($isAuthenticated){

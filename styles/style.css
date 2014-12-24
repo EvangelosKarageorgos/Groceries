@@ -400,11 +400,22 @@
     padding: 15px 70px;
 }
 
-.details .productOrderArea .addToCartArea .orderedQuantity{
+.details .productOrderArea .addToCartArea .orderedQuantity, {
 	width: 30px;
 	text-align: center;
 }
 
+
+
+.resultNumberField{ 
+	width: 50px;
+	text-align: center;
+}
+
+.date-picker{ 
+	width: 90px;
+	margin-right:5px;
+}
 
 
 
@@ -423,4 +434,70 @@
 .query-menu-item a{
 	text-decoration: none;
 	color: #333333;
+}
+
+
+
+
+.invoice table,
+.cart table{
+	width: 80%;
+	margin: auto;
+}
+
+.invoice  img,
+.cart  img{
+	height: 70px;
+	width: 70px;
+	float: left;
+	display: inline-block;
+	border: 1px solid lightgray;
+}
+
+.invoice.item a,
+.cart .item a{
+	text-decoration: none;
+}
+
+.invoice .item  .name, 
+.invoice .item  .group,
+.cart .item  .name, 
+	.cart .item  .group{
+	float: left;
+	display: inline-block;
+	padding: 20px 10px; 
+}
+
+.invoice .item .price,
+.invoice .item .total-price,
+.cart .item .price,
+.cart .item .total-price{
+	text-align: right;
+}
+
+.invoice .item .qty,
+.cart .item .qty {
+	float: left;
+	display: inline-block;
+	padding: 20px;
+
+}
+
+.invoice .item .qty-modify, 
+.cart .item .qty-modify 
+{
+	float: left;
+	display: inline-block;
+}
+
+.invoice .summary, .invoice .checkout-btn-container,
+.cart .summary, .cart .checkout-btn-container{
+	margin: 0 auto;
+	width: 30%;
+	margin-top:20px;
+}
+
+.invoice .summary .total-price,
+.cart .summary .total-price{
+	font-size: 20px;
 }
