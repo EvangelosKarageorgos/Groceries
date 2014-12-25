@@ -28,37 +28,55 @@ class GroceriesTools
 		return array('markup' => $markup, 'model' => $model);
 	}
 
-	public static function searchSeperation(&$table, $searchSet, &$element, &$target, $sep){
-	$first = true;
-	$nextSearch = 0;
-	var_dump($searchSet);
-	//var_dump($element);
-	foreach($searchSet as $key){
-		if($first){
-			$nextSearch = $key;
-			$first = false;
+	public static function searchSeperation(&$table, &$element, &$target, &$path=null, $sep=0, $searchSet=null){
+		$first = true;
+		if(is_array($path))
+			$path[] = $element;
+		if($element==$target)
+			return $sep;
+		if($searchSet==null){
+			$searchSet = array();
+			foreach($table as $k => $v)
+				if($k!=$element)
+					$searchSet[] = $k;		
 		}
-		$tvalue = $table[$key];
-		$f = false;
-		var_dump($element);
-		var_dump($tvalue);
-		foreach($element as $pc){
-			if(in_array($pc, $tvalue)){
-				return $sep+1;
+		$searchSets = array();
+		foreach($searchSet as $key){
+			$tvalue = $table[$key];
+			$f = false;
+			if($key != $element){
+				foreach($table[$element] as $pc){
+					if(in_array($pc, $tvalue)){
+						$f=true;
+						if($key==$target){
+							if(is_array($path))
+								$path[] = $key;
+							return $sep+1;
+						}
+						break;
+					}
+				}
+				if($f){
+					$newSearchSet = $searchSet;
+					if (($k = array_search($key, $newSearchSet)) !== false) {
+						unset($newSearchSet[$k]);
+					}
+					$searchSets[$key] = $newSearchSet;
+				}
 			}
 		}
-		$newSearchSet = $searchSet;
-		if (($k = array_search($key, $newSearchSet)) !== false) {
-			unset($newSearchSet[$k]);
+		foreach($searchSets as $k => $v){
+			$s = self::searchSeperation($table, $k, $target, $path, $sep+1, $v);
+			if($s>0)
+				return $s;
 		}
-		var_dump($newSearchSet);
-		$s = self::searchSeperation($table, $newSearchSet, $tvalue, $target, $sep+1);
-		if($s>0)
-			return $s;
+		if(is_array($path)){
+			if (($k = array_search($element, $path)) !== false) {
+				unset($path[$k]);
+			}
+		}
 		return -1;
 	}
-	
-}
 
 	
 }

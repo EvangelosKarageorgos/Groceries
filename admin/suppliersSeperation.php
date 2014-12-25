@@ -11,35 +11,29 @@ Application::getAuth()->enterAdminPage();
 	$supplier2 = intval(Application::getRequest()->getGetParam("supplier2", "-1"));
 	
 	$suppliersModel = array();
-	Application::getDB()->WhileReader("select distinct s.supplier_id, (select supplier_name from suppliers where supplier_id = s.supplier_id limit 1) as supplier_name from suppliers s", function(&$r) use(&$suppliersModel){
+	Application::getDB()->WhileReader("select distinct s.supplier_id, (select supplier_name from suppliers where supplier_id = s.supplier_id limit 1) as supplier_name from suppliers s order by supplier_name", function(&$r) use(&$suppliersModel){
 		$suppliersModel[] = array('supplierId' => $r['supplier_id'], 'name' => $r['supplier_name']);
 	});
 	
 	$showSeperation = false;
 	if($supplier1>=0 and $supplier2>=0){
 		$showSeperation = true;
-		$seperation = 0;
-		
 		$table = array();
 		Application::getDB()->WhileReader("select distinct supplier_id, prod_code from suppliers", function(&$r) use (&$table){
 			if(isset($table[intval($r['supplier_id'])]))
 				$table[intval($r['supplier_id'])][] = $r['prod_code'];
 			else
 				$table[intval($r['supplier_id'])] = array($r['prod_code']);
-			
-			//$table[intval($r['supplier_id'])] = $r['prod_code'];
 		});
-		var_dump($table);
-		$searchSet = array();
-		foreach($table as $k => $v)
-			if($k!=$supplier1)
-				$searchSet[] = $k;
-		$seperation = GroceriesTools::searchSeperation($table, $searchSet, $table[$supplier1], $table[$supplier2], 0);
-		
-		// --- seperation calculation
-		
-		
-		
+		$idpath = array();
+		$seperation = GroceriesTools::searchSeperation($table, $supplier1, $supplier2, $idpath);
+		$path = array();
+		foreach($idpath as $p){
+			foreach($suppliersModel as &$m){
+				if($m['supplierId']==$p)
+				$path[] = $m['name'];
+			}
+		}
 	}
 	
 ?>
@@ -63,9 +57,18 @@ Application::getAuth()->enterAdminPage();
 		<input type="submit" class="groceriesBtn" value="Calculate"/>
 	</form>
 	<?php if($showSeperation){ ?>
-	<div>
-		Supliers have a seperation degree of <?= $seperation ?>
-	</div>
+		<div class='suppliers-seperation'>
+			<?php if($seperation>=0) { ?>
+				Suppliers have a seperation degree of <?= $seperation ?> through these connections:
+				<div class="seperation-path">
+					<?php foreach($path as $e){ ?>
+						<span class="path-element"><?= $e ?></span>
+					<?php } ?>
+				</div>
+			<?php } else { ?>
+				Suppliers have no connection between them.
+			<?php } ?>
+		</div>
 	<?php } ?>
 	
 </div>

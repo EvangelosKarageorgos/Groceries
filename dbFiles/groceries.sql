@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 24, 2014 at 10:49 AM
+-- Generation Time: Dec 25, 2014 at 12:22 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -66,6 +66,20 @@ begin
 	delete from cart_details where cartid=@cartid and qty<=0;
 	
 	select c.cartid as cart_id, c.cust_no, cd.* from carts c left join cart_details cd on cd.cartid=c.cartid where c.cartid = @cartid;
+end$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `supply_product`(IN `isupplier_id` INT, IN `iprod_code` VARCHAR(50))
+    MODIFIES SQL DATA
+begin
+	if not exists (select * from suppliers where supplier_id=isupplier_id and prod_code=iprod_code) then
+    begin
+    	insert into suppliers (supplier_id, prod_code, supplier_name, email, quant_sofar) (select supplier_id, iprod_code as prod_code, supplier_name, email, 0 as quant_sofar from suppliers where supplier_id=isupplier_id limit 1);
+    end;
+    end if;
+	set @qty = (select procur_qty from products where prod_code=iprod_code);
+	update suppliers set quant_sofar = quant_sofar + @qty where supplier_id=isupplier_id and prod_code=iprod_code;
+    update products set qty_on_hand = qty_on_hand + @qty where prod_code=iprod_code;
+    
 end$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `user_login`(IN `ilogin` VARCHAR(50), IN `ipassword` VARCHAR(50))
@@ -217,6 +231,21 @@ begin
     return 1;
 end$$
 
+CREATE DEFINER=`root`@`localhost` FUNCTION `supply_product_new_supplier`(`iprod_code` VARCHAR(50), `isupplier_name` VARCHAR(50) CHARSET utf8, `isupplier_email` VARCHAR(50)) RETURNS int(11)
+    MODIFIES SQL DATA
+begin
+	if exists (select * from suppliers where supplier_name=isupplier_name) then
+    begin
+    	return -1;
+    end;
+    end if;
+		set @qty = (select procur_qty from products where prod_code=iprod_code);
+        set @newid = (select (max(supplier_id)+1) as supplier_id from suppliers);
+    	insert into suppliers (supplier_id, prod_code, supplier_name, email, quant_sofar) values (@newid, iprod_code, isupplier_name, isupplier_email, @qty);
+    update products set qty_on_hand = qty_on_hand + @qty where prod_code=iprod_code;
+	return LAST_INSERT_ID();    
+end$$
+
 DELIMITER ;
 
 -- --------------------------------------------------------
@@ -232,7 +261,7 @@ CREATE TABLE IF NOT EXISTS `carts` (
   `IsActive` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`cartid`),
   KEY `cust_no` (`cust_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=41 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=44 ;
 
 --
 -- Dumping data for table `carts`
@@ -278,7 +307,10 @@ INSERT INTO `carts` (`cartid`, `cust_no`, `CreatedOn`, `IsActive`) VALUES
 (37, 2, '2014-12-24 00:29:50', 0),
 (38, 2, '2014-12-24 00:41:28', 0),
 (39, 2, '2014-12-24 01:42:55', 0),
-(40, NULL, '2014-12-24 02:26:31', 1);
+(40, NULL, '2014-12-24 02:26:31', 1),
+(41, 1, '2014-12-24 10:04:36', 0),
+(42, 1, '2014-12-24 10:07:26', 1),
+(43, 2, '2014-12-24 12:08:28', 0);
 
 -- --------------------------------------------------------
 
@@ -336,7 +368,10 @@ INSERT INTO `cart_details` (`cartid`, `prod_code`, `qty`) VALUES
 (38, 'S_002_OCT', 1),
 (39, 'S_002_OCT', 1),
 (39, 'V_003_CRT', 1),
-(39, 'V_005_LTC', 1);
+(39, 'V_005_LTC', 1),
+(41, 'S_002_OCT', 1),
+(43, 'S_002_OCT', 1),
+(43, 'V_007_WCB', 13);
 
 -- --------------------------------------------------------
 
@@ -353,7 +388,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `is_valid` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`order_no`),
   KEY `cust_no` (`cust_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=28 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=30 ;
 
 --
 -- Dumping data for table `orders`
@@ -364,7 +399,9 @@ INSERT INTO `orders` (`order_no`, `order_date`, `cust_no`, `total_cost`, `is_com
 (24, '2014-12-23 23:57:11', 1, '4.00', 1, 1),
 (25, '2014-12-24 00:41:21', 2, '4.50', 0, 0),
 (26, '2014-12-24 00:41:38', 2, '30.50', 1, 1),
-(27, '2014-12-24 01:43:28', 2, '34.00', 0, 1);
+(27, '2014-12-24 01:43:28', 2, '34.00', 0, 1),
+(28, '2014-12-24 10:05:45', 1, '30.50', 0, 0),
+(29, '2014-12-24 12:15:38', 2, '56.50', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -395,7 +432,10 @@ INSERT INTO `order_details` (`order_no`, `prod_code`, `order_qty`, `order_sum`) 
 (26, 'S_002_OCT', 1, '30.50'),
 (27, 'S_002_OCT', 1, '30.50'),
 (27, 'V_003_CRT', 1, '1.50'),
-(27, 'V_005_LTC', 1, '2.00');
+(27, 'V_005_LTC', 1, '2.00'),
+(28, 'S_002_OCT', 1, '30.50'),
+(29, 'S_002_OCT', 1, '30.50'),
+(29, 'V_007_WCB', 13, '26.00');
 
 -- --------------------------------------------------------
 
@@ -422,16 +462,16 @@ CREATE TABLE IF NOT EXISTS `products` (
 --
 
 INSERT INTO `products` (`prod_code`, `name`, `description`, `prod_group`, `list_price`, `qty_on_hand`, `procur_level`, `procur_qty`, `imageUrl`) VALUES
-('S_001_TUN', 'Tuna', 'Tuna fish', 'S', '151.00', 7, 3, 20, NULL),
-('S_002_OCT', 'Octopus', 'Fresh octopus fished at Calymnos', 'S', '30.50', 7, 2, 10, NULL),
+('S_001_TUN', 'Tuna', 'Tuna fish', 'S', '151.00', 21, 3, 20, NULL),
+('S_002_OCT', 'Octopus', 'Fresh octopus fished at Calymnos', 'S', '30.50', 6, 2, 10, NULL),
 ('V_001_TOM', 'Tomato', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 8, 10, 10, '/images/products/tomato.jpg'),
 ('V_002_CUC', 'Cucumber', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\nTrtrwe sdfs dfwe wer sdsvsdfsd', 'V', '1.00', 6, 5, 5, '/images/products/cucumber.jpg'),
-('V_003_CRT', 'Carrot', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nCarrots', 'V', '1.50', 7, 10, 15, '/images/products/carrots.jpg'),
-('V_004_CLF', 'Cauliflower', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 6, 10, 5, '/images/products/cauliflower.jpg'),
+('V_003_CRT', 'Carrot', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nCarrots', 'V', '1.50', 22, 10, 15, '/images/products/carrots.jpg'),
+('V_004_CLF', 'Cauliflower', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '3.00', 11, 10, 5, '/images/products/cauliflower.jpg'),
 ('V_005_LTC', 'Lettuce', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '2.00', 11, 10, 10, '/images/products/lettuce.jpg'),
 ('V_006_RCB', 'Red Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem', 'V', '5.00', 15, 7, 3, '/images/products/cabbage_red.jpg'),
-('V_007_WCB', 'Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum.', 'V', '2.00', 25, 5, 10, '/images/products/cabbage_white.jpg'),
-('V_008_BRC', 'Broccoli', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nTRwewrsfdfs sdf werrtt dfg dfg wewe weerdfg', 'V', '7.50', 6, 10, 5, '/images/products/broccoli.jpg');
+('V_007_WCB', 'Cabbage', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum.', 'V', '2.00', 12, 5, 10, '/images/products/cabbage_white.jpg'),
+('V_008_BRC', 'Broccoli', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et lacus eget nisi sodales tempus. Sed nec velit in metus porttitor elementum. Quisque vulputate tortor sem\r\n\r\nTRwewrsfdfs sdf werrtt dfg dfg wewe weerdfg', 'V', '7.50', 11, 10, 5, '/images/products/broccoli.jpg');
 
 -- --------------------------------------------------------
 
@@ -473,6 +513,26 @@ CREATE TABLE IF NOT EXISTS `suppliers` (
   PRIMARY KEY (`prod_code`,`supplier_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Dumping data for table `suppliers`
+--
+
+INSERT INTO `suppliers` (`prod_code`, `supplier_id`, `supplier_name`, `email`, `quant_sofar`) VALUES
+('S_001_TUN', 1, 'supplier1', 'sup1@mail.com', 20),
+('S_002_OCT', 3, 'supplier3', 'sup3@email.com', 2),
+('V_001_TOM', 1, 'supplier1', 'sup1@mail.com', 2),
+('V_001_TOM', 2, 'supplier2', 'sup2@mail.com', 1),
+('V_003_CRT', 2, 'supplier2', 'sup2@email.com', 2),
+('V_004_CLF', 5, 'supplier5', 'sup5@email.com', 5),
+('V_005_LTC', 4, 'supplier4', 'sup4@email.com', 2),
+('V_005_LTC', 5, 'supplier5', 'sup5@email.com', 2),
+('V_006_RCB', 2, 'supplier2', 'sup2@email.com', 2),
+('V_006_RCB', 3, 'supplier3', 'sup3@email.com', 2),
+('V_007_WCB', 3, 'supplier3', 'sup3@email.com', 2),
+('V_007_WCB', 5, 'supplier5', 'sup5@email.com', 2),
+('V_008_BRC', 3, 'supplier3', 'sup3@email.com', 2),
+('V_008_BRC', 6, 'supplier6', 'sup6@mail.com', 5);
+
 -- --------------------------------------------------------
 
 --
@@ -488,7 +548,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
   `is_validated` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`transaction_id`),
   KEY `order_no` (`order_no`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
 
 --
 -- Dumping data for table `transactions`
@@ -499,7 +559,9 @@ INSERT INTO `transactions` (`transaction_id`, `order_no`, `creditcard_no`, `tran
 (2, 24, '123456-65', '4', '2014-12-23 23:57:11', 1),
 (3, 25, '122233', '5', '2014-12-24 00:41:21', 0),
 (4, 26, '545645', '31', '2014-12-24 00:41:38', 1),
-(5, 27, '123-456-6789', '34', '2014-12-24 01:43:28', 0);
+(5, 27, '123-456-6789', '34', '2014-12-24 01:43:28', 0),
+(6, 28, 'tertert', '31', '2014-12-24 10:05:45', 0),
+(7, 29, '1233-665', '57', '2014-12-24 12:15:38', 0);
 
 -- --------------------------------------------------------
 
@@ -528,8 +590,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`cust_no`, `login`, `password`, `cust_name`, `email`, `street`, `town`, `post_code`, `cr_limit`, `curr_bal`, `IsAdmin`) VALUES
-(1, 'admin', 'admin', 'Store manager', 'admin@groceries.gr', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '200', '0', 1),
-(2, 'angello', '1234', 'Angello Karageorgos', 'ibz-angello@hotmail.com', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '218', '34', 0);
+(1, 'admin', 'admin', 'Store manager', 'admin@groceries.gr', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '200', '1', 1),
+(2, 'angello', '1234', 'Angello Karageorgos', 'ibz-angello@hotmail.com', 'Ksenofronos 9A, Zwgrafou', 'Athens', '15773', '218', '91', 0);
 
 --
 -- Constraints for dumped tables

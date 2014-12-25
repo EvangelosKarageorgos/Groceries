@@ -33,7 +33,7 @@ Application::getAuth()->enterAdminPage();
 	?>
 </div>
 	<script>
-		$(".order").each(function(jj, wrapper){
+		$(".order-box").each(function(jj, wrapper){
 			$(wrapper).find('.complete-action').click(function(){
 				completeOrder(wrapper);
 			});

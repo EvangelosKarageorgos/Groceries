@@ -1,4 +1,4 @@
-<div class="order-box full-content">
+<div class="order-box full-content" order-no="<?= $model["orderNo"]?>">
 	<div class="summary">
 		<div class="field orderno">
 			<span class="label">Order number :&nbsp;</span>

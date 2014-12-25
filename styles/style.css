@@ -1,4 +1,5 @@
 .hidden{display:none;}
+.error{color:red;}
 
 .clrfloat {
 	clear:both;
@@ -438,6 +439,11 @@
 
 .account-menu .menu-item a{text-decoration:none;}
 .account-menu .menu-item span{text-decoration:none;}
+
+.admin-supply-products .product{margin:3px; background-color:#e7edeb}
+.admin-supply-products .product .new-supplier-container .details form{margin:0px auto; width:143px;}
+.admin-supply-products .product .new-supplier-container .details form .groceriesBtn{margin:0px auto; display:block;}
+.admin-supply-products .product >form {margin:0px;}
 
 
 
