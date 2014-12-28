@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 25, 2014 at 12:22 PM
+-- Generation Time: Dec 28, 2014 at 04:21 PM
 -- Server version: 5.6.17
 -- PHP Version: 5.5.12
 
@@ -96,25 +96,6 @@ begin
 	end if;
 	
 	select @isAuth as IsAuth, @isAdmin as IsAdmin, @custNo as custNum;
-    
-end$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `user_register`(IN `ilogin` VARCHAR(50), IN `ipass` VARCHAR(50), IN `ifullname` VARCHAR(50) CHARSET utf8, IN `iemail` VARCHAR(50), IN `istreet` VARCHAR(50) CHARSET utf8, IN `itown` VARCHAR(20) CHARSET utf8, IN `ipostcode` VARCHAR(10))
-    NO SQL
-begin
-    SET @existingLogin = 0;
-	SET @custNo = -1;
-	
-	SET @existingLogin = (select count(*) from Users where login=ilogin);
-	if (@existingLogin = 0) then 
-    begin
-		INSERT INTO Users (login, password, cust_name, email, street, town, post_code, cr_limit, curr_bal)
-		VALUES (ilogin, ipass, ifullname, iemail, istreet, itown, ipostcode, 200, 0);
-		SET @custNo = LAST_INSERT_ID();		
-	end;
-	end if;
-	
-	select @isAuth as IsAuth, @custNo as custNum;
     
 end$$
 
@@ -221,16 +202,6 @@ begin
 	end if;
 end$$
 
-CREATE DEFINER=`root`@`localhost` FUNCTION `supliers_seperation`(`supplier_id_from` INT, `supplier_id_to` INT) RETURNS int(11)
-    NO SQL
-begin
-	set @sup_from = supplier_id_from;
-    set @sup_to = supplier_id_to;
-    set @connected = (select * from suppliers s1 inner join suppliers s2 on s1.prod_code=s2.prod_code where s1.supplier_id=s2.supplier_id);
-    
-    return 1;
-end$$
-
 CREATE DEFINER=`root`@`localhost` FUNCTION `supply_product_new_supplier`(`iprod_code` VARCHAR(50), `isupplier_name` VARCHAR(50) CHARSET utf8, `isupplier_email` VARCHAR(50)) RETURNS int(11)
     MODIFIES SQL DATA
 begin
@@ -244,6 +215,25 @@ begin
     	insert into suppliers (supplier_id, prod_code, supplier_name, email, quant_sofar) values (@newid, iprod_code, isupplier_name, isupplier_email, @qty);
     update products set qty_on_hand = qty_on_hand + @qty where prod_code=iprod_code;
 	return LAST_INSERT_ID();    
+end$$
+
+CREATE DEFINER=`root`@`localhost` FUNCTION `user_register`(`ilogin` VARCHAR(50), `ipass` VARCHAR(50), `ifullname` VARCHAR(50) CHARSET utf8, `iemail` VARCHAR(50), `istreet` VARCHAR(50) CHARSET utf8, `itown` VARCHAR(20) CHARSET utf8, `ipostcode` VARCHAR(10)) RETURNS int(11)
+    NO SQL
+begin
+    SET @existingLogin = 0;
+	SET @custNo = -1;
+	
+	SET @existingLogin = (select count(*) from Users where login=ilogin);
+	if (@existingLogin = 0) then 
+    begin
+		INSERT INTO Users (login, password, cust_name, email, street, town, post_code, cr_limit, curr_bal)
+		VALUES (ilogin, ipass, ifullname, iemail, istreet, itown, ipostcode, 200, 0);
+		SET @custNo = LAST_INSERT_ID();		
+	end;
+	end if;
+	
+	return @custNo;
+    
 end$$
 
 DELIMITER ;
@@ -505,7 +495,7 @@ INSERT INTO `product_groups` (`group_code`, `group_name`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `suppliers` (
-  `prod_code` varchar(20) COLLATE utf8_bin NOT NULL,
+  `prod_code` varchar(20) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   `supplier_id` int(11) NOT NULL,
   `supplier_name` varchar(50) COLLATE utf8_bin NOT NULL,
   `email` varchar(50) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -628,6 +618,12 @@ ALTER TABLE `order_details`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `products_ibfk_1` FOREIGN KEY (`prod_group`) REFERENCES `product_groups` (`group_code`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `suppliers`
+--
+ALTER TABLE `suppliers`
+  ADD CONSTRAINT `suppliers_ibfk_1` FOREIGN KEY (`prod_code`) REFERENCES `products` (`prod_code`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `transactions`

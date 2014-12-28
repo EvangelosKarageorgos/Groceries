@@ -47,7 +47,7 @@ class Authentication
 		
 		else {
 			
-			Application::getDB()->WhileReader("call user_register('?', '?', '?', '?', '?', '?', '?')", function(&$r) use(&$isAuth, &$custNo){
+			Application::getDB()->WhileReader("select user_register('?', '?', '?', '?', '?', '?', '?') as custNum", function(&$r) use(&$isAuth, &$custNo){
 				$userNotExists = intval($r["existingLogin"])==0;
 				if($userNotExists){
 					$result = 0;
