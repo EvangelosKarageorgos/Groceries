@@ -55,7 +55,7 @@ class Order
 				$p = new Product();
 				$p->loadFromRow($r);
 				$pm = $p->toModel();
-				$pm['totalPrice'] = intval($r['order_sum']);
+				$pm['totalPrice'] = floatval($r['order_sum']);
 				array_push($items, $pm);
 			}, $this->orderno);
 			

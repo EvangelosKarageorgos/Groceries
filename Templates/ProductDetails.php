@@ -2,7 +2,7 @@
 	
 	$queryString = "SELECT min(order_qty) AS min_order, max(order_qty) AS max_order FROM `order_details` WHERE prod_code = '".$model['code']."' GROUP BY prod_code ";
 
-		$product_orders = array();
+	$product_orders = array('min' => 'none', 'max' => 'none');
 	Application::getDB()->WhileReader($queryString, function(&$row) use(&$product_orders){
 		$product_orders['min'] = $row['min_order']>0 ? $row['min_order'] : 0;
 		$product_orders['max'] = $row['max_order']>0 ? $row['max_order'] : 0;

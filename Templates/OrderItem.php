@@ -8,6 +8,6 @@
 		<div class="qty"><?= $model['qty'] ?></div>
 	</td>
 	<td>
-		<div class="total-price"><?= $model['totalPrice'] ?></div>$
+		<div class="total-price"><?= $model['totalPrice'] ?> $</div>
 	</td>
 </tr>

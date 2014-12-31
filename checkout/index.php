@@ -42,7 +42,7 @@
 		<span>Please type your credit card number :</span>
 		<input type="text" name="cardno" value="<?= $cardno ?>" placeholder="cretid card no." />
 		<div class="error cardno hidden"></div>
-		<input type="checkbox" name="agree" value="yes" >I aggree with the site's terms and conditions</input>
+		<input type="checkbox" name="agree" value="yes" >I agree with the site's terms and conditions</input>
 		<input type="submit" class="groceriesBtn proceed-button" name="submit" value="Proceed" />
 		<?php /*<input type="submit" value="submit"/>*/ ?>
 	</form>

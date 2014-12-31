@@ -13,7 +13,6 @@
 	$orderModel['itemTemplate'] = dirname(__FILE__)."/../Templates/OrderItem.php";
 	
 	$invoice = renderTemplate(dirname(__FILE__)."/../Templates/Invoice.php", $orderModel);
-
 ?>
 <div class="checkout-form">
 	<h4>Your order has been submitted</h4>

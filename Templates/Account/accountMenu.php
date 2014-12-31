@@ -3,7 +3,7 @@
 <div class="searchbox">
 			
 	<div class="box-heading">
-		<span>Admin Area</span>
+		<span>Account Area</span>
 	</div>
 				
 	<div class="box-content"> 

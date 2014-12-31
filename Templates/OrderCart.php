@@ -25,7 +25,7 @@
 		</div>
 		<div class="total-price">
 			<span class="label">Total cost:&nbsp;</span>
-			<span class="price"><?= $model["totalPrice"] ?></span>
+			<span class="price"><?= $model["totalPrice"] ?> $</span>
 		</div>
 	</div>
 </div>
